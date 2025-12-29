@@ -1,4 +1,4 @@
-package com.example.sounds.ui.components.song_playing_controls
+package com.example.sounds.ui.components.song_playing
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
@@ -12,25 +12,22 @@ import com.example.sounds.R
 import com.example.sounds.ui.components.utils.AppIconButton
 import com.example.sounds.ui.components.utils.PreviewColumn
 
-enum class RepeatBtnState(
+enum class ShuffleBtnState(
     @get:DrawableRes val iconRes: Int,
 ) {
-    NoRepeat(R.drawable.ic_repeat_off),
-    RepeatOne(R.drawable.ic_repeat_one),
-    RepeatAll(R.drawable.ic_repeat_all)
+    NoShuffle(R.drawable.ic_shuffle_off),
+    ShuffleOn(R.drawable.ic_shuffle_on)
 }
 
 @Composable
-fun RepeatBtn(
+fun ShuffleBtn(
     modifier: Modifier = Modifier,
 ) {
-
-    var state by remember { mutableStateOf(RepeatBtnState.NoRepeat) }
+    var state by remember { mutableStateOf(ShuffleBtnState.NoShuffle) }
     val toggleState = {
         state = when(state) {
-            RepeatBtnState.NoRepeat -> RepeatBtnState.RepeatOne
-            RepeatBtnState.RepeatOne -> RepeatBtnState.RepeatAll
-            RepeatBtnState.RepeatAll -> RepeatBtnState.NoRepeat
+            ShuffleBtnState.NoShuffle -> ShuffleBtnState.ShuffleOn
+            ShuffleBtnState.ShuffleOn -> ShuffleBtnState.NoShuffle
         }
     }
 
@@ -44,8 +41,8 @@ fun RepeatBtn(
 
 @Preview
 @Composable
-private fun RepeatBtnPreview() {
+private fun ShuffleBtnPreview() {
     PreviewColumn() {
-        RepeatBtn()
+        ShuffleBtn()
     }
 }

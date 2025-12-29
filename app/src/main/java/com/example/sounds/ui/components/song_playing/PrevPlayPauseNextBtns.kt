@@ -1,4 +1,4 @@
-package com.example.sounds.ui.components.song_playing_controls
+package com.example.sounds.ui.components.song_playing
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

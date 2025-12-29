@@ -1,4 +1,4 @@
-package com.example.sounds.ui.components.song_playing_controls
+package com.example.sounds.ui.components.song_playing
 
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
