@@ -11,23 +11,23 @@ import androidx.compose.ui.unit.dp
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
-fun ControlSectionSongPlay(
-    width: Float = 256f,
+fun SongPlaying(
     modifier: Modifier = Modifier,
+    artistName: String,
+    songTitle: String,
 ) {
+    val width = 256f
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-        ,
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SeekBar(
-            width = width * 1.07f, // looks better this way
+        MetadataSP(
+            artistName = artistName,
+            songTitle = songTitle,
+            width = width,
         )
-        Spacer(
-            modifier = Modifier
-                .height(32.dp)
-        )
-        ControlButtonsSongPlay(
+        Spacer(modifier = Modifier.height(48.dp))
+        ControlSectionSongPlay(
             width = width,
         )
     }
@@ -35,8 +35,11 @@ fun ControlSectionSongPlay(
 
 @Preview
 @Composable
-private fun ControlSectionSongPlayPreview() {
-    PreviewColumn() {
-        ControlSectionSongPlay()
+private fun SongPlayingPreview() {
+    PreviewColumn {
+        SongPlaying(
+            artistName = "LADIPOE (feat. Ayo Maff)",
+            songTitle = "Tension",
+        )
     }
 }

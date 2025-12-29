@@ -5,19 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="PrevPlayPauseNextBtnsPreview">
+      <SelectionState runConfigName="AlbumArtSongPlayPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ShuffleBtnPreview">
+      <SelectionState runConfigName="ArtistNameSongPlayPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ControlButtonsSongPlayPreview">
+      <SelectionState runConfigName="SongTitleSPPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ProgressBarPreview">
+      <SelectionState runConfigName="MetadataSPPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ControlSectionSongPlayPreview">
+      <SelectionState runConfigName="SongPlayingPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
