@@ -12,11 +12,12 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 @Composable
 fun ControlButtonsSongPlay(
     modifier: Modifier = Modifier,
+    width: Float = 256f,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
-            .width(256.dp)
+            .width(width.dp)
         ,
     ) {
 
