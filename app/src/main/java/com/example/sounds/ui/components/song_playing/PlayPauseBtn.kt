@@ -22,6 +22,7 @@ enum class PlayPauseState(
 @Composable
 fun PlayPauseBtn(
     modifier: Modifier = Modifier,
+    size: Int = 24,
 ) {
     var state by remember { mutableStateOf(PlayPauseState.Play) }
     val toggleState = {
@@ -33,6 +34,7 @@ fun PlayPauseBtn(
 
     AppIconButton(
         iconRes = state.iconRes,
+        size = size,
         modifier = modifier,
     ) {
         toggleState()
