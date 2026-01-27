@@ -36,7 +36,7 @@ fun AlbumArtSLI(
     Box(
         modifier = modifier
             .border(
-                width = 1.dp,
+                width = 0.1.dp,
                 color = colorTelli,
                 shape = boxShape
             )

@@ -28,11 +28,11 @@ import com.example.sounds.ui.theme.colorSane
 
 @Composable
 fun SongListItem(
+    modifier: Modifier = Modifier,
     title: String,
     artistName: String,
     isSongPlaying: Boolean = false,
     onClick: () -> Unit = {},
-    modifier: Modifier = Modifier,
 ) {
     ClickableSurface(
         onClick = onClick,
