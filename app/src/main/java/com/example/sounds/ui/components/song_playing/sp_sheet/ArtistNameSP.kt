@@ -1,32 +1,32 @@
-package com.example.sounds.ui.components.song_playing
+package com.example.sounds.ui.components.song_playing.sp_sheet
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sounds.ui.components.utils.PreviewColumn
-import com.example.sounds.ui.theme.tsOrion
+import com.example.sounds.ui.theme.tsHush
 
 @Composable
-fun SongTitleSP(
-    title: String,
+fun ArtistNameSongPlay(
+    artistName: String,
     modifier: Modifier = Modifier,
 ) {
+    val ts = tsHush
     Text(
-        text = title,
-        style = tsOrion
-            .copy(fontWeight = FontWeight.SemiBold),
+        text = artistName,
+        style = ts
+            .copy(fontSize = ts.fontSize * 1.2),
         modifier = modifier,
     )
 }
 
 @Preview
 @Composable
-private fun SongTitleSPPreview() {
+private fun ArtistNameSongPlayPreview() {
     PreviewColumn {
-        SongTitleSP(
-            title = "23"
+        ArtistNameSongPlay(
+            artistName = "Burna Boy"
         )
     }
 }

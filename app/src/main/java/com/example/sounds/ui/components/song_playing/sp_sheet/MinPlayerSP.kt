@@ -25,7 +25,7 @@ import com.example.sounds.ui.theme.tsOrion
 @Composable
 fun MiniPlayerSongPlaying(
     heightDp: Int,
-    horizontalPaddingDp: Int,
+    endPaddingDp: Int,
     modifier: Modifier = Modifier,
 ) {
     // TODO, don't harcode
@@ -37,8 +37,6 @@ fun MiniPlayerSongPlaying(
         modifier = modifier
             .fillMaxWidth()
             .height(heightDp.dp)
-            .topShadow(shadowHeight = 20f)
-            .background(colorAguero)
         ,
     ) {
         Column(
@@ -59,7 +57,7 @@ fun MiniPlayerSongPlaying(
         PlayPauseBtn(
             size = 16
         )
-        Spacer(modifier = Modifier.width(horizontalPaddingDp.dp))
+        Spacer(modifier = Modifier.width(endPaddingDp.dp))
     }
 }
 
@@ -69,7 +67,7 @@ private fun MiniPlayerSongPlayingPreview() {
     PreviewColumn() {
         MiniPlayerSongPlaying(
             heightDp = 48,
-            horizontalPaddingDp = 16
+            endPaddingDp = 16
         )
     }
 }
