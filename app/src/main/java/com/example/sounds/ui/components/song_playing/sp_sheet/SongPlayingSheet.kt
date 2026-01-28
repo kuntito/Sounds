@@ -89,8 +89,8 @@ fun rememberSongPlayingSheetState(
 @Composable
 fun SongPlayingSheet(
     modifier: Modifier = Modifier,
+    miniPlayerHeight: Int,
 ) {
-    val miniPlayerHeight = 48
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val sheetState = rememberSongPlayingSheetState(
         minHeight = miniPlayerHeight,
@@ -122,7 +122,7 @@ fun SongPlayingSheet(
         // this is the horizontal mini player
         Row(
             modifier = Modifier
-                .topShadow(shadowHeight = shadowHeight)
+//                .topShadow(shadowHeight = shadowHeight), pending fix
         ) {
             ExpandableAlbumArtSP(
                 fractionOfSheetExpanded = sheetState.fractionOfSheetExpanded,
@@ -167,6 +167,7 @@ private fun SongPlayingSheetPreview() {
             .fillMaxSize(),
     ) {
         SongPlayingSheet(
+            miniPlayerHeight = 48,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         )

@@ -1,15 +1,11 @@
 package com.example.sounds.ui.screens
 
-import android.R
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.sounds.data.models.dummySongList
 import com.example.sounds.ui.components.song_list.SongList
 import com.example.sounds.ui.components.song_playing.sp_sheet.SongPlayingSheet
@@ -24,14 +20,20 @@ fun SongPlayingScreen(
 
     // TODO add the mini player components..
     //  see `MiniPlayerSP`
+    val miniPlayerHeight = 48
     Box(
         modifier = modifier
             .fillMaxSize()
     ) {
-        SongList(songs = dummySongList)
+        SongList(
+            songs = dummySongList,
+            topEdgePadding = 16f,
+            bottomEdgePadding = miniPlayerHeight * 1.2f,
+        )
         SongPlayingSheet(
+            miniPlayerHeight = miniPlayerHeight,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
+                .align(Alignment.BottomCenter),
         )
     }
 }
