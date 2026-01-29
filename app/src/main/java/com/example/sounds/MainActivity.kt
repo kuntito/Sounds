@@ -4,44 +4,51 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.sounds.data.SoundsRepository
+import com.example.sounds.data.local.SoundsDb
+import com.example.sounds.data.remote.SoundsApiClient
+import com.example.sounds.ui.SongViewModel
+import com.example.sounds.ui.SongViewModelFactory
+import com.example.sounds.ui.screens.SongPlayingScreen
 import com.example.sounds.ui.theme.SoundsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // dependency setup
+        val db = SoundsDb.getDatabase(applicationContext)
+        val repository = SoundsRepository(
+            songDao = db.songDao(),
+            soundsApi = SoundsApiClient.soundsApi,
+            context = applicationContext
+        )
+
+        val songViewModel: SongViewModel by viewModels { SongViewModelFactory(repository) }
+
         enableEdgeToEdge()
         setContent {
+            val songs by songViewModel.songs.collectAsState()
+            val currentSongId by songViewModel.currentSongId.collectAsState()
+
             SoundsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    SongPlayingScreen(
+                        songs = songs,
+                        currentSongId = currentSongId,
+                        playSong = songViewModel::playSong,
+                        modifier = Modifier
+                            .padding(innerPadding),
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SoundsTheme {
-        Greeting("Android")
     }
 }

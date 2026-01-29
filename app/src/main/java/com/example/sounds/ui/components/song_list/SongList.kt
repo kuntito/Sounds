@@ -21,6 +21,8 @@ fun SongList(
     songs: List<Song>,
     topEdgePadding: Float,
     bottomEdgePadding: Float,
+    currentSongId: String? = null,
+    playSong: (Song) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -37,6 +39,10 @@ fun SongList(
             SongListItem(
                 title = song.title,
                 artistName = song.artistName,
+                isSongPlaying = currentSongId == song.id,
+                onClick = {
+                    playSong(song)
+                }
             )
         }
         item {
@@ -56,6 +62,7 @@ private fun SongListPreview() {
             songs = dummySongList,
             topEdgePadding = 0f,
             bottomEdgePadding = 0f,
+            playSong = {}
         )
     }
 }

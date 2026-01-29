@@ -31,8 +31,8 @@ fun SongListItem(
     modifier: Modifier = Modifier,
     title: String,
     artistName: String,
-    isSongPlaying: Boolean = false,
-    onClick: () -> Unit = {},
+    isSongPlaying: Boolean,
+    onClick: () -> Unit,
 ) {
     ClickableSurface(
         onClick = onClick,

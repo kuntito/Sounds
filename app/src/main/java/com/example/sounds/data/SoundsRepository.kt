@@ -61,7 +61,10 @@ class SoundsRepository(
                 )
                 songDao.insert(songEntity)
             }
-
         }
+    }
+
+    suspend fun getLocalPath(songId: String): String? {
+        return songDao.getLocalPath(songId)
     }
 }
