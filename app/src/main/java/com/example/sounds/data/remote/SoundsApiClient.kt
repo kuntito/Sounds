@@ -11,7 +11,7 @@ object SoundsApiClient {
     // TODO replace with stable base url
     private const val BASE_URL = "https://05ef49e3e7a9.ngrok-free.app"
 
-    // JSON parser with Kotlin support, apparently, JS has this in-built
+    // JSON parser with Kotlin support, apparently, JS has this in-built, so i didn't have to do it
     private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
