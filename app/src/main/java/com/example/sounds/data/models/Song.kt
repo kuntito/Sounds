@@ -1,9 +1,17 @@
 package com.example.sounds.data.models
 
+import com.example.sounds.data.local.SongEntity
+
 data class Song(
     val id: String,
     val title: String,
     val artistName: String,
+)
+
+fun SongEntity.toSong() = Song(
+    id = id,
+    title = title,
+    artistName = artist,
 )
 
 val dummySong = Song(
