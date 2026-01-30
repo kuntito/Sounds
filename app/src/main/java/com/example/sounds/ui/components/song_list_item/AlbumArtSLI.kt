@@ -44,7 +44,7 @@ fun AlbumArtSLI(
             .size(size.dp)
     ) {
         Image(
-            painter = painterResource(R.drawable.img_album_art),
+            painter = painterResource(R.drawable.album_art_placeholder),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()

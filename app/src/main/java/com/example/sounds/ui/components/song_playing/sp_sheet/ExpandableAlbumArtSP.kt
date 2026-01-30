@@ -41,7 +41,7 @@ fun ExpandableAlbumArtSP(
 
     val boxShape = RoundedCornerShape(8.dp)
     Image(
-        painter = painterResource(R.drawable.img_album_art),
+        painter = painterResource(R.drawable.album_art_placeholder),
         contentDescription = null,
         modifier = modifier
             .padding(
@@ -58,6 +58,11 @@ fun ExpandableAlbumArtSP(
                     stop = 0.dp,
                     fractionOfSheetExpanded,
                 )
+            )
+            .border(
+                width = 0.1.dp,
+                color = colorTelli,
+                shape = boxShape
             )
             .size(
                 lerp(
