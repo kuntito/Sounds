@@ -103,6 +103,10 @@ class SongPlayer(private val scope: CoroutineScope) {
             setDataSource(filePath)
             setOnCompletionListener {
                 positionUpdateJob?.cancel()
+                _playerState.value = _playerState.value.copy(
+                    isPlaying = false,
+                    currentPositionMs = 0,
+                )
             }
             prepare()
             start()
