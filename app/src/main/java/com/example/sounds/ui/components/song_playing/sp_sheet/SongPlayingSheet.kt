@@ -66,6 +66,14 @@ class SongPlayingSheetState(
             else -> 0f
         }
     }
+
+    fun expand() {
+        fractionOfSheetExpanded = 1f
+    }
+
+    fun collapse() {
+        fractionOfSheetExpanded = 0f
+    }
 }
 
 @Composable
@@ -148,6 +156,16 @@ fun SongPlayingSheet(
                         isPlaying = playerState.isPlaying,
                         onPlay = onPlaySong,
                         onPause = onPause,
+                        modifier = Modifier
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() },
+                                enabled = true,
+                                onClick = {
+                                    sheetState.expand()
+                                }
+                            )
+                        ,
                     )
                 }
             }
