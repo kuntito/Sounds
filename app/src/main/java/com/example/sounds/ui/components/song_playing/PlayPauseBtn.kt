@@ -1,6 +1,5 @@
 package com.example.sounds.ui.components.song_playing
 
-import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,39 +11,37 @@ import com.example.sounds.R
 import com.example.sounds.ui.components.utils.AppIconButton
 import com.example.sounds.ui.components.utils.PreviewColumn
 
-enum class PlayPauseState(
-    @get:DrawableRes val iconRes: Int,
-) {
-    Play(R.drawable.ic_play),
-    Pause(R.drawable.ic_pause)
-}
-
 @Composable
 fun PlayPauseBtn(
     modifier: Modifier = Modifier,
+    isPlaying: Boolean,
+    onPlay: () -> Unit,
+    onPause: () -> Unit,
     size: Int = 24,
 ) {
-    var state by remember { mutableStateOf(PlayPauseState.Play) }
-    val toggleState = {
-        state = when(state) {
-            PlayPauseState.Play -> PlayPauseState.Pause
-            PlayPauseState.Pause -> PlayPauseState.Play
-        }
-    }
-
+    val iconRes = if (isPlaying) R.drawable.ic_pause  else R.drawable.ic_play
+    val onClick: () -> Unit = if (isPlaying) onPause else onPlay
     AppIconButton(
-        iconRes = state.iconRes,
+        iconRes = iconRes,
         size = size,
         modifier = modifier,
-    ) {
-        toggleState()
-    }
+        onClick = onClick
+    )
 }
 
 @Preview
 @Composable
 private fun PlayPauseBtnPreview() {
     PreviewColumn() {
-        PlayPauseBtn()
+        var isPlaying by remember{ mutableStateOf(false) }
+        PlayPauseBtn(
+            isPlaying = isPlaying,
+            onPlay = {
+                isPlaying = true
+            },
+            onPause = {
+                isPlaying = false
+            }
+        )
     }
 }

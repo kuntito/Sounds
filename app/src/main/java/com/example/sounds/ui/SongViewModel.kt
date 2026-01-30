@@ -17,7 +17,7 @@ class SongViewModel(
     private val repository: SoundsRepository,
 ): ViewModel() {
     private val songPlayer = SongPlayer(viewModelScope)
-    val currentSongId: StateFlow<String?> = songPlayer.currentSongId
+    val playerState = songPlayer.playerState
 
     val songs: StateFlow<List<Song>> = repository.getSongs()
         .map { entities -> entities.map{ it.toSong() } }
@@ -32,9 +32,15 @@ class SongViewModel(
         viewModelScope.launch {
             val path = repository.getLocalPath(song.id) ?: return@launch
             songPlayer.play(
-                songId = song.id,
+                song = song,
                 filePath = path,
             )
+        }
+    }
+
+    fun pauseSong() {
+        viewModelScope.launch {
+            songPlayer.pause()
         }
     }
 

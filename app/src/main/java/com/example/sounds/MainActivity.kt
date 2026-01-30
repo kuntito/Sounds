@@ -36,14 +36,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val songs by songViewModel.songs.collectAsState()
-            val currentSongId by songViewModel.currentSongId.collectAsState()
+            val playerState by songViewModel.playerState.collectAsState()
 
             SoundsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     SongPlayingScreen(
                         songs = songs,
-                        currentSongId = currentSongId,
+                        playerState = playerState,
                         playSong = songViewModel::playSong,
+                        onPause = songViewModel::pauseSong,
                         modifier = Modifier
                             .padding(innerPadding),
                     )

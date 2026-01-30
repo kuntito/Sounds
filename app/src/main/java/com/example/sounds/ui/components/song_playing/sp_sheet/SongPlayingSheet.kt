@@ -2,9 +2,11 @@ package com.example.sounds.ui.components.song_playing.sp_sheet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -27,6 +29,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
+import com.example.sounds.data.models.Song
+import com.example.sounds.data.models.dummySong
+import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.song_playing.ControlSectionSongPlay
 import com.example.sounds.ui.components.utils.topShadow
 import com.example.sounds.ui.theme.colorAguero
@@ -90,6 +95,9 @@ fun rememberSongPlayingSheetState(
 fun SongPlayingSheet(
     modifier: Modifier = Modifier,
     miniPlayerHeight: Int,
+    playerState: PlayerState,
+    onPlay: (song: Song) -> Unit,
+    onPause: () -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val sheetState = rememberSongPlayingSheetState(
@@ -98,61 +106,73 @@ fun SongPlayingSheet(
     )
 
     val containerColor = if (sheetState.isCollapsed) colorAguero else colorKDB
-    SheetContainer(
-        miniPlayerHeight = miniPlayerHeight,
-        screenHeight = screenHeight,
-        sheetState = sheetState,
-        modifier = modifier
-            .background(color = containerColor),
-    ) {
-        // the padding above the image..
-        if (sheetState.fractionOfSheetExpanded > 0f) {
-            Spacer(
-                modifier = Modifier.height(
-                    lerp(
-                        0.dp,
-                        128.dp,
-                        sheetState.fractionOfSheetExpanded
+    playerState.currentSong?.let { currentSong ->
+
+        val onPlaySong = { onPlay(currentSong) }
+        SheetContainer(
+            miniPlayerHeight = miniPlayerHeight,
+            screenHeight = screenHeight,
+            sheetState = sheetState,
+            modifier = modifier
+                .background(color = containerColor),
+        ) {
+            // the padding above the image..
+            if (sheetState.fractionOfSheetExpanded > 0f) {
+                Spacer(
+                    modifier = Modifier.height(
+                        lerp(
+                            0.dp,
+                            128.dp,
+                            sheetState.fractionOfSheetExpanded
+                        )
                     )
                 )
-            )
-        }
-        val horizontalPadding = 16
-        val shadowHeight = if (sheetState.isCollapsed) 20f else 0f
-        // this is the horizontal mini player
-        Row(
-            modifier = Modifier
-//                .topShadow(shadowHeight = shadowHeight), pending fix
-        ) {
-            ExpandableAlbumArtSP(
-                fractionOfSheetExpanded = sheetState.fractionOfSheetExpanded,
-                miniPlayerHeight = miniPlayerHeight,
-                horizontalPadding = horizontalPadding,
-            )
-            if(sheetState.isCollapsed) {
-                MiniPlayerSongPlaying(
-                    heightDp = miniPlayerHeight,
-                    endPaddingDp = horizontalPadding,
-                )
             }
-        }
-        if (sheetState.isExpanded) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            val horizontalPadding = 16
+            val shadowHeight = if (sheetState.isCollapsed) 20f else 0f
+            // this is the horizontal mini player
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                ,
+    //                .topShadow(shadowHeight = shadowHeight), pending fix
             ) {
-                Spacer(modifier = Modifier.height(32.dp))
-                SongTitleSP(
-                    title = "Unknown"
+                ExpandableAlbumArtSP(
+                    fractionOfSheetExpanded = sheetState.fractionOfSheetExpanded,
+                    miniPlayerHeight = miniPlayerHeight,
+                    horizontalPadding = horizontalPadding,
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                ArtistNameSongPlay(
-                    artistName = "unknown",
-                )
-                Spacer(modifier = Modifier.height(48.dp))
-                ControlSectionSongPlay()
+                if(sheetState.isCollapsed) {
+                    MiniPlayerSongPlaying(
+                        heightDp = miniPlayerHeight,
+                        endPaddingDp = horizontalPadding,
+                        currentSong = currentSong,
+                        isPlaying = playerState.isPlaying,
+                        onPlay = onPlaySong,
+                        onPause = onPause,
+                    )
+                }
+            }
+            if (sheetState.isExpanded) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                    ,
+                ) {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    SongTitleSP(
+                        title = currentSong.title
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ArtistNameSongPlay(
+                        artistName = currentSong.artistName,
+                    )
+                    Spacer(modifier = Modifier.height(48.dp))
+                    ControlSectionSongPlay(
+                        playerState = playerState,
+                        onPlay = onPlaySong,
+                        onPause = onPause,
+                    )
+                }
             }
         }
     }
@@ -168,6 +188,11 @@ private fun SongPlayingSheetPreview() {
     ) {
         SongPlayingSheet(
             miniPlayerHeight = 48,
+            playerState = PlayerState(
+                currentSong = dummySong,
+            ),
+            onPlay = {},
+            onPause = {},
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         )

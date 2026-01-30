@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySong
 import com.example.sounds.data.models.dummySongList
+import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.song_list_item.SongListItem
 import com.example.sounds.ui.components.utils.PreviewColumn
 
@@ -21,7 +22,7 @@ fun SongList(
     songs: List<Song>,
     topEdgePadding: Float,
     bottomEdgePadding: Float,
-    currentSongId: String? = null,
+    playerState: PlayerState,
     playSong: (Song) -> Unit,
 ) {
     LazyColumn(
@@ -39,7 +40,7 @@ fun SongList(
             SongListItem(
                 title = song.title,
                 artistName = song.artistName,
-                isSongPlaying = currentSongId == song.id,
+                isSongPlaying = playerState.currentSong == song && playerState.isPlaying,
                 onClick = {
                     playSong(song)
                 }
@@ -62,6 +63,7 @@ private fun SongListPreview() {
             songs = dummySongList,
             topEdgePadding = 0f,
             bottomEdgePadding = 0f,
+            playerState = PlayerState(),
             playSong = {}
         )
     }

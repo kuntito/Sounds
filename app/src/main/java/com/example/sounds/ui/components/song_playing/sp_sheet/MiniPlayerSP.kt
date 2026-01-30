@@ -1,6 +1,5 @@
 package com.example.sounds.ui.components.song_playing.sp_sheet
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,13 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sounds.data.models.Song
+import com.example.sounds.data.models.dummySong
 import com.example.sounds.ui.components.song_playing.PlayPauseBtn
 import com.example.sounds.ui.components.utils.PreviewColumn
-import com.example.sounds.ui.components.utils.topShadow
-import com.example.sounds.ui.theme.colorAguero
 import com.example.sounds.ui.theme.tsHush
 import com.example.sounds.ui.theme.tsOrion
 
@@ -26,11 +24,12 @@ import com.example.sounds.ui.theme.tsOrion
 fun MiniPlayerSongPlaying(
     heightDp: Int,
     endPaddingDp: Int,
+    currentSong: Song,
+    isPlaying: Boolean,
+    onPlay: () -> Unit,
+    onPause: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // TODO, don't harcode
-    val songTitle = "Trees"
-    val artistName = "Olivetheboy"
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -46,16 +45,19 @@ fun MiniPlayerSongPlaying(
             ,
         ) {
             Text(
-                text = songTitle,
+                text = currentSong.title,
                 style = tsOrion,
             )
             Text(
-                text = artistName,
+                text = currentSong.artistName,
                 style = tsHush,
             )
         }
         PlayPauseBtn(
-            size = 16
+            size = 16,
+            isPlaying = isPlaying,
+            onPlay = onPlay,
+            onPause = onPause,
         )
         Spacer(modifier = Modifier.width(endPaddingDp.dp))
     }
@@ -67,7 +69,11 @@ private fun MiniPlayerSongPlayingPreview() {
     PreviewColumn() {
         MiniPlayerSongPlaying(
             heightDp = 48,
-            endPaddingDp = 16
+            endPaddingDp = 16,
+            currentSong = dummySong,
+            isPlaying = false,
+            onPlay = {},
+            onPause = {},
         )
     }
 }

@@ -8,12 +8,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sounds.data.models.Song
+import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
 fun ControlSectionSongPlay(
-    width: Float = 256f,
     modifier: Modifier = Modifier,
+    width: Float = 256f,
+    playerState: PlayerState,
+    onPlay: () -> Unit,
+    onPause: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -29,6 +34,9 @@ fun ControlSectionSongPlay(
         )
         ControlButtonsSongPlay(
             width = width,
+            playerState = playerState,
+            onPlay = onPlay,
+            onPause = onPause,
         )
     }
 }
@@ -37,6 +45,12 @@ fun ControlSectionSongPlay(
 @Composable
 private fun ControlSectionSongPlayPreview() {
     PreviewColumn() {
-        ControlSectionSongPlay()
+        ControlSectionSongPlay(
+            playerState = PlayerState(
+                isPlaying = false,
+            ),
+            onPlay = {},
+            onPause = {},
+        )
     }
 }

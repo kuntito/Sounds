@@ -7,12 +7,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
 fun ControlButtonsSongPlay(
     modifier: Modifier = Modifier,
     width: Float = 256f,
+    playerState: PlayerState,
+    onPlay: () -> Unit,
+    onPause: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -22,7 +26,11 @@ fun ControlButtonsSongPlay(
     ) {
 
         ShuffleBtn()
-        PrevPlayPauseNextBtns()
+        PrevPlayPauseNextBtns(
+            playerState = playerState,
+            onPlay = onPlay,
+            onPause = onPause,
+        )
         RepeatBtn()
     }
 }
@@ -32,6 +40,12 @@ fun ControlButtonsSongPlay(
 @Composable
 private fun ControlButtonsSongPlayPreview() {
     PreviewColumn() {
-        ControlButtonsSongPlay()
+        ControlButtonsSongPlay(
+            playerState = PlayerState(
+                isPlaying = false,
+            ),
+            onPlay = {},
+            onPause = {},
+        )
     }
 }
