@@ -14,7 +14,16 @@ import kotlinx.coroutines.launch
 data class PlayerState(
     val currentSong: Song? = null,
     val isPlaying: Boolean = false,
-)
+    val currentPositionMs: Int = 0,
+    val durationMs: Int = 0,
+) {
+    val playProgress: Float
+        get() = if (durationMs > 0) {
+            currentPositionMs.toFloat() / durationMs.toFloat()
+        } else {
+            0f
+        }
+}
 
 class SongPlayer(private val scope: CoroutineScope) {
     private var mediaPlayer: MediaPlayer? = null
@@ -41,11 +50,42 @@ class SongPlayer(private val scope: CoroutineScope) {
                 _playerState.value = _playerState.value.copy(
                     currentSong = song,
                     isPlaying = true,
+                    durationMs = mediaPlayer?.duration ?: 0
                 )
+
+                startPositionUpdates()
 
             } catch (e: Exception) {
                 mediaPlayer?.reset()
             }
+        }
+    }
+
+
+    fun startPositionUpdates() {
+        positionUpdateJob?.cancel()
+        positionUpdateJob = scope.launch {
+            try {
+                while (mediaPlayer?.isPlaying == true) {
+                    _playerState.value = _playerState.value.copy(
+                        currentPositionMs = mediaPlayer?.currentPosition ?: 0
+                    )
+                    delay(1000)
+                }
+            } catch(e: Exception) {
+
+            }
+        }
+    }
+
+    fun seekTo(progress: Float) {
+        val durationMs = _playerState.value.durationMs
+        if (durationMs > 0) {
+            val newPositionMs = (progress * durationMs).toInt()
+            mediaPlayer?.seekTo(newPositionMs)
+            _playerState.value = _playerState.value.copy(
+                currentPositionMs = newPositionMs
+            )
         }
     }
 
@@ -74,10 +114,13 @@ class SongPlayer(private val scope: CoroutineScope) {
         _playerState.value = _playerState.value.copy(
             isPlaying = false,
         )
+        positionUpdateJob?.cancel()
     }
+
 
     fun release() {
         mediaPlayer?.release()
         _playerState.value = PlayerState()
+        positionUpdateJob?.cancel()
     }
 }

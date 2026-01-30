@@ -21,6 +21,7 @@ fun SongPlayingScreen(
     playerState: PlayerState,
     playSong: (Song) -> Unit,
     onPause: () -> Unit,
+    onSeekTo: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // TODO start here.. mini player should appear with `colorAguero` background,
@@ -50,6 +51,7 @@ fun SongPlayingScreen(
                 playerState = playerState,
                 onPlay = playSong,
                 onPause = onPause,
+                onSeekTo = onSeekTo,
             )
         }
     }
@@ -66,6 +68,7 @@ private fun SongPlayingScreenPreview() {
             playerState = PlayerState(),
             playSong = {},
             onPause = {},
+            onSeekTo = {},
         )
     }
 }

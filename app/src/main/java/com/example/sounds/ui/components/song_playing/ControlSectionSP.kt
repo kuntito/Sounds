@@ -8,7 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.sounds.data.models.Song
 import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.utils.PreviewColumn
 
@@ -19,6 +18,7 @@ fun ControlSectionSongPlay(
     playerState: PlayerState,
     onPlay: () -> Unit,
     onPause: () -> Unit,
+    onSeekTo: (Float) -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -27,6 +27,8 @@ fun ControlSectionSongPlay(
     ) {
         SeekBar(
             width = width * 1.07f, // looks better this way
+            progress = playerState.playProgress,
+            onSeekTo = onSeekTo,
         )
         Spacer(
             modifier = Modifier
@@ -51,6 +53,7 @@ private fun ControlSectionSongPlayPreview() {
             ),
             onPlay = {},
             onPause = {},
+            onSeekTo = {},
         )
     }
 }

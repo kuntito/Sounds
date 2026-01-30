@@ -1,6 +1,5 @@
 package com.example.sounds.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sounds.data.SoundsRepository
@@ -39,9 +38,11 @@ class SongViewModel(
     }
 
     fun pauseSong() {
-        viewModelScope.launch {
-            songPlayer.pause()
-        }
+        songPlayer.pause()
+    }
+
+    fun seekSongTo(progress: Float) {
+        songPlayer.seekTo(progress)
     }
 
     override fun onCleared() {

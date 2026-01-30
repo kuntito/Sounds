@@ -14,9 +14,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,10 +29,11 @@ import com.example.sounds.ui.theme.colorTelli
 fun SeekBar(
     modifier: Modifier = Modifier,
     width: Float = 256f,
+    progress: Float,
+    onSeekTo: (Float) -> Unit,
 ) {
-    var progress by remember { mutableFloatStateOf(0f) }
     val onProgressChange: (Float) -> Unit = {
-        progress = it
+        onSeekTo(it)
     }
 
     val colors = SliderDefaults.colors(
@@ -85,6 +84,9 @@ fun SeekBar(
 @Composable
 private fun SeekBarPreview() {
     PreviewColumn{
-        SeekBar()
+        SeekBar(
+            progress = 0f,
+            onSeekTo = {},
+        )
     }
 }
