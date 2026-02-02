@@ -41,6 +41,7 @@ fun SongList(
                 title = song.title,
                 artistName = song.artistName,
                 isSongPlaying = playerState.currentSong == song && playerState.isPlaying,
+                albumArtFilePath = song.albumArtFilePath,
                 onClick = {
                     playSong(song)
                 }

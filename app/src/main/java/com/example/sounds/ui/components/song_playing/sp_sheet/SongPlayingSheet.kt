@@ -148,6 +148,7 @@ fun SongPlayingSheet(
                     fractionOfSheetExpanded = sheetState.fractionOfSheetExpanded,
                     miniPlayerHeight = miniPlayerHeight,
                     horizontalPadding = horizontalPadding,
+                    albumArtFilePath = currentSong.albumArtFilePath,
                 )
                 if(sheetState.isCollapsed) {
                     MiniPlayerSongPlaying(

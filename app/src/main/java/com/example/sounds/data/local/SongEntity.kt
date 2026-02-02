@@ -9,5 +9,6 @@ data class SongEntity(
     val id: String,
     val title: String,
     val artist: String,
-    val localPath: String
+    val songFilePath: String,
+    val albumArtFilePath: String,
 )

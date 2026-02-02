@@ -6,12 +6,14 @@ data class Song(
     val id: String,
     val title: String,
     val artistName: String,
+    val albumArtFilePath: String? = null,
 )
 
 fun SongEntity.toSong() = Song(
     id = id,
     title = title,
     artistName = artist,
+    albumArtFilePath = albumArtFilePath
 )
 
 val dummySong = Song(

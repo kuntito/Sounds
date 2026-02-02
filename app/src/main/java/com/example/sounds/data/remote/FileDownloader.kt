@@ -7,10 +7,10 @@ import okhttp3.Request
 import java.io.File
 import java.io.FileOutputStream
 
-object SongDownloader {
+object FileDownloader {
     private val httpClient = OkHttpClient()
 
-    suspend fun downloadSong(url: String, destFile: File): Boolean {
+    suspend fun downloadFile(url: String, destFile: File): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val request = Request

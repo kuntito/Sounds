@@ -14,6 +14,6 @@ interface SongDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(song: SongEntity)
 
-    @Query("SELECT localPath FROM songs WHERE id = :songId")
-    suspend fun getLocalPath(songId: String): String?
+    @Query("SELECT songFilePath FROM songs WHERE id = :songId")
+    suspend fun getSongFilePath(songId: String): String?
 }

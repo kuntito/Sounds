@@ -31,6 +31,7 @@ fun SongListItem(
     modifier: Modifier = Modifier,
     title: String,
     artistName: String,
+    albumArtFilePath: String?,
     isSongPlaying: Boolean,
     onClick: () -> Unit,
 ) {
@@ -50,6 +51,7 @@ fun SongListItem(
             Spacer(modifier = Modifier.width(12.dp))
             AlbumArtSLI(
                 isSongPlaying = isSongPlaying,
+                albumArtFilePath = albumArtFilePath,
             )
             Spacer(modifier = Modifier.width(16.dp))
             SongTitleAndArtistName(
@@ -101,12 +103,14 @@ private fun SongListItemPreview() {
         SongListItem(
             title = "Monica Lewinsky",
             artistName = "SAINt JHN",
+            albumArtFilePath = null,
             isSongPlaying = playingIndex == 0,
             onClick = { playingIndex = 0 }
         )
         SongListItem(
             title = "Monica Lewinsky",
             artistName = "SAINt JHN",
+            albumArtFilePath = null,
             isSongPlaying = playingIndex == 1,
             onClick = { playingIndex = 1 }
         )

@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
 
+    // image loading
+    implementation(libs.coil.compose)
+
     // local database
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)

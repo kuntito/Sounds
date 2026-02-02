@@ -18,18 +18,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.sounds.R
+import com.example.sounds.ui.components.utils.AlbumArt
 import com.example.sounds.ui.components.utils.PreviewColumn
 import com.example.sounds.ui.theme.colorTelli
 import kotlinx.coroutines.delay
+import java.io.File
 
 @Composable
 fun AlbumArtSLI(
     size: Int = 32,
     isSongPlaying: Boolean = false,
+    albumArtFilePath: String?,
     modifier: Modifier = Modifier,
 ) {
     val boxShape = RoundedCornerShape(8.dp)
@@ -43,9 +48,8 @@ fun AlbumArtSLI(
             .clip(shape = boxShape)
             .size(size.dp)
     ) {
-        Image(
-            painter = painterResource(R.drawable.album_art_placeholder),
-            contentDescription = null,
+        AlbumArt(
+            filePath = albumArtFilePath,
             modifier = Modifier
                 .fillMaxSize()
         )
@@ -85,6 +89,7 @@ private fun AlbumArtSLIPreview() {
         AlbumArtSLI(
             size = 32,
             isSongPlaying = isSongPlaying,
+            albumArtFilePath = null,
             modifier = Modifier
                 .clickable(
                     enabled = true,
