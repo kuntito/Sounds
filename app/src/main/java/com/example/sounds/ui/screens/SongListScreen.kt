@@ -24,11 +24,7 @@ fun SongPlayingScreen(
     onSeekTo: (Float) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // TODO start here.. mini player should appear with `colorAguero` background,
-    //  the moment it expands, switch to `colorKDB`
 
-    // TODO add the mini player components..
-    //  see `MiniPlayerSP`
     val miniPlayerHeight = 48
     Box(
         modifier = modifier
