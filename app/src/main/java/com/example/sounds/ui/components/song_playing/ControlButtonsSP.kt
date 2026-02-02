@@ -17,6 +17,8 @@ fun ControlButtonsSongPlay(
     playerState: PlayerState,
     onPlay: () -> Unit,
     onPause: () -> Unit,
+    onNext: () -> Unit,
+    onPrev: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -30,6 +32,8 @@ fun ControlButtonsSongPlay(
             playerState = playerState,
             onPlay = onPlay,
             onPause = onPause,
+            onNext = onNext,
+            onPrev = onPrev,
         )
         RepeatBtn()
     }
@@ -46,6 +50,8 @@ private fun ControlButtonsSongPlayPreview() {
             ),
             onPlay = {},
             onPause = {},
+            onNext = {},
+            onPrev = {},
         )
     }
 }

@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,8 +19,11 @@ fun SongPlayingScreen(
     songs: List<Song>,
     playerState: PlayerState,
     playSong: (Song) -> Unit,
+    onSongItemClick: (Int, List<Song>) -> Unit,
     onPause: () -> Unit,
     onSeekTo: (Float) -> Unit,
+    onNext: () -> Unit,
+    onPrev: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -31,11 +33,11 @@ fun SongPlayingScreen(
             .fillMaxSize()
     ) {
         SongList(
-            songs = songs,
+            songList = songs,
             topEdgePadding = 16f,
             bottomEdgePadding = miniPlayerHeight * 1.2f,
             playerState = playerState,
-            playSong = playSong,
+            onSongItemClick = onSongItemClick,
         )
         AnimatedVisibility(
             visible = playerState.currentSong != null,
@@ -48,6 +50,8 @@ fun SongPlayingScreen(
                 onPlay = playSong,
                 onPause = onPause,
                 onSeekTo = onSeekTo,
+                onNext = onNext,
+                onPrev = onPrev,
             )
         }
     }
@@ -63,8 +67,11 @@ private fun SongPlayingScreenPreview() {
             songs = dummySongList,
             playerState = PlayerState(),
             playSong = {},
+            onSongItemClick = { _, _ -> },
             onPause = {},
             onSeekTo = {},
+            onNext = {},
+            onPrev = {},
         )
     }
 }

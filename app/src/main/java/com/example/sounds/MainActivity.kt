@@ -44,8 +44,11 @@ class MainActivity : ComponentActivity() {
                         songs = songs,
                         playerState = playerState,
                         playSong = songViewModel::playSong,
+                        onSongItemClick = songViewModel::onSongItemClick,
                         onPause = songViewModel::pauseSong,
                         onSeekTo = songViewModel::seekSongTo,
+                        onNext = songViewModel::onNextSong,
+                        onPrev = songViewModel::onPreviousSong,
                         modifier = Modifier
                             .padding(innerPadding),
                     )

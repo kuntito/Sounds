@@ -18,6 +18,8 @@ fun PrevPlayPauseNextBtns(
     playerState: PlayerState,
     onPlay: () -> Unit,
     onPause: () -> Unit,
+    onNext: () -> Unit,
+    onPrev: () -> Unit,
 ) {
     // play/pause icon is visually left-heavy
     // spacers experimentally adjusted to compensate
@@ -28,8 +30,9 @@ fun PrevPlayPauseNextBtns(
         modifier = modifier,
     ) {
         AppIconButton(
-            iconRes = R.drawable.ic_prev
-        ) { }
+            iconRes = R.drawable.ic_prev,
+            onClick = onPrev,
+        )
         Spacer(modifier = Modifier.width(leftSpacer.dp))
         PlayPauseBtn(
             isPlaying = playerState.isPlaying,
@@ -38,8 +41,9 @@ fun PrevPlayPauseNextBtns(
         )
         Spacer(modifier = Modifier.width(rightSpacer.dp))
         AppIconButton(
-            iconRes = R.drawable.ic_next
-        ) { }
+            iconRes = R.drawable.ic_next,
+            onClick = onNext,
+        )
     }
 }
 
@@ -51,6 +55,8 @@ private fun PrevPlayPauseNextBtnsPreview() {
             playerState = PlayerState(),
             onPlay = {},
             onPause = {},
+            onNext = {},
+            onPrev = {},
         )
     }
 }

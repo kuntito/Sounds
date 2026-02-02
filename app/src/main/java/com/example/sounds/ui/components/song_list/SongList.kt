@@ -5,12 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sounds.data.models.Song
-import com.example.sounds.data.models.dummySong
 import com.example.sounds.data.models.dummySongList
 import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.song_list_item.SongListItem
@@ -19,11 +19,11 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 @Composable
 fun SongList(
     modifier: Modifier = Modifier,
-    songs: List<Song>,
+    songList: List<Song>,
     topEdgePadding: Float,
     bottomEdgePadding: Float,
     playerState: PlayerState,
-    playSong: (Song) -> Unit,
+    onSongItemClick: (Int, List<Song>) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -36,14 +36,14 @@ fun SongList(
                     .height(topEdgePadding.dp)
             )
         }
-        items(songs) { song ->
+        itemsIndexed(songList) { index, song ->
             SongListItem(
                 title = song.title,
                 artistName = song.artistName,
                 isSongPlaying = playerState.currentSong == song && playerState.isPlaying,
                 albumArtFilePath = song.albumArtFilePath,
                 onClick = {
-                    playSong(song)
+                    onSongItemClick(index, songList)
                 }
             )
         }
@@ -61,11 +61,11 @@ fun SongList(
 private fun SongListPreview() {
     PreviewColumn {
         SongList(
-            songs = dummySongList,
+            songList = dummySongList,
             topEdgePadding = 0f,
             bottomEdgePadding = 0f,
             playerState = PlayerState(),
-            playSong = {}
+            onSongItemClick = { _, _ -> }
         )
     }
 }

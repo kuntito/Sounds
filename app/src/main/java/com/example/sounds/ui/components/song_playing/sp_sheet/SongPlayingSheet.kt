@@ -107,6 +107,8 @@ fun SongPlayingSheet(
     onPlay: (song: Song) -> Unit,
     onPause: () -> Unit,
     onSeekTo: (Float) -> Unit,
+    onNext: () -> Unit,
+    onPrev: () -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val sheetState = rememberSongPlayingSheetState(
@@ -192,6 +194,8 @@ fun SongPlayingSheet(
                         onPlay = onPlaySong,
                         onPause = onPause,
                         onSeekTo = onSeekTo,
+                        onNext = onNext,
+                        onPrev = onPrev,
                     )
                 }
             }
@@ -215,6 +219,8 @@ private fun SongPlayingSheetPreview() {
             onPlay = {},
             onPause = {},
             onSeekTo = {},
+            onNext = {},
+            onPrev = {},
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         )

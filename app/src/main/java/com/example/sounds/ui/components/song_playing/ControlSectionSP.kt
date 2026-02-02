@@ -19,6 +19,8 @@ fun ControlSectionSongPlay(
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onSeekTo: (Float) -> Unit,
+    onNext: () -> Unit,
+    onPrev: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,6 +41,8 @@ fun ControlSectionSongPlay(
             playerState = playerState,
             onPlay = onPlay,
             onPause = onPause,
+            onNext = onNext,
+            onPrev = onPrev,
         )
     }
 }
@@ -54,6 +58,8 @@ private fun ControlSectionSongPlayPreview() {
             onPlay = {},
             onPause = {},
             onSeekTo = {},
+            onPrev = {},
+            onNext = {},
         )
     }
 }

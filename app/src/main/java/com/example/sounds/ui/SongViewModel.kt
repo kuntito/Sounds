@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.sounds.data.SoundsRepository
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.toSong
+import com.example.sounds.player.QueueManager
 import com.example.sounds.player.SongPlayer
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,7 @@ class SongViewModel(
     private val repository: SoundsRepository,
 ): ViewModel() {
     private val songPlayer = SongPlayer(viewModelScope)
+    private val queueManager = QueueManager()
     val playerState = songPlayer.playerState
 
     val songs: StateFlow<List<Song>> = repository.getSongs()
@@ -26,6 +28,16 @@ class SongViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList(),
         )
+
+    fun onSongItemClick(
+        indexClickedSong: Int,
+        songList: List<Song>,
+    ) {
+        queueManager.setup(indexClickedSong, songList)
+
+        val song = songList[indexClickedSong]
+        playSong(song)
+    }
 
     fun playSong(song: Song) {
         viewModelScope.launch {
@@ -43,6 +55,20 @@ class SongViewModel(
 
     fun seekSongTo(progress: Float) {
         songPlayer.seekTo(progress)
+    }
+
+    fun onNextSong() {
+        val nextSong = queueManager.next()
+        nextSong?.let {
+            playSong(it)
+        }
+    }
+
+    fun onPreviousSong() {
+        val previousSong = queueManager.previous()
+        previousSong?.let {
+            playSong(it)
+        }
     }
 
     override fun onCleared() {
