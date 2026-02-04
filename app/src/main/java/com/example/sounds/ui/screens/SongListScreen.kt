@@ -24,6 +24,7 @@ fun SongPlayingScreen(
     onSeekTo: (Float) -> Unit,
     onNext: () -> Unit,
     onPrev: () -> Unit,
+    songQueue: List<Song>,
     modifier: Modifier = Modifier,
 ) {
 
@@ -52,6 +53,7 @@ fun SongPlayingScreen(
                 onSeekTo = onSeekTo,
                 onNext = onNext,
                 onPrev = onPrev,
+                songQueue = songQueue,
             )
         }
     }
@@ -72,6 +74,7 @@ private fun SongPlayingScreenPreview() {
             onSeekTo = {},
             onNext = {},
             onPrev = {},
+            songQueue = dummySongList,
         )
     }
 }

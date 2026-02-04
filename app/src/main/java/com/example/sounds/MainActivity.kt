@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val songs by songViewModel.songs.collectAsState()
             val playerState by songViewModel.playerState.collectAsState()
+            val songQueue by songViewModel.songQueue.collectAsState()
 
             SoundsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -49,6 +50,7 @@ class MainActivity : ComponentActivity() {
                         onSeekTo = songViewModel::seekSongTo,
                         onNext = songViewModel::onNextSong,
                         onPrev = songViewModel::onPreviousSong,
+                        songQueue = songQueue,
                         modifier = Modifier
                             .padding(innerPadding),
                     )

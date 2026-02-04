@@ -1,30 +1,34 @@
 package com.example.sounds.player
 
 import com.example.sounds.data.models.Song
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class QueueManager {
-    private var queueOfSongs: List<Song> = emptyList()
+    private val _queueOfSongs = MutableStateFlow<List<Song>>(emptyList())
+    val queueOfSongs: StateFlow<List<Song>> = _queueOfSongs.asStateFlow()
     private var currentIndex: Int = 0
 
     fun setup(
         indexClickedSong: Int,
         songList: List<Song>,
     ) {
-        queueOfSongs = songList
+        _queueOfSongs.value = songList
         currentIndex = indexClickedSong
     }
 
     fun next(): Song? {
-        if (currentIndex + 1 == queueOfSongs.size) return null
+        if (currentIndex + 1 == queueOfSongs.value.size) return null
 
         currentIndex++
-        return queueOfSongs[currentIndex]
+        return queueOfSongs.value[currentIndex]
     }
 
     fun previous(): Song? {
         if (currentIndex == 0) return null
 
         currentIndex--
-        return queueOfSongs[currentIndex]
+        return queueOfSongs.value[currentIndex]
     }
 }
