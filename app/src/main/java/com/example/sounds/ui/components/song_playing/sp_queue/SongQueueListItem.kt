@@ -30,6 +30,7 @@ fun SongQueueListItem(
     title: String,
     artistName: String,
     albumArtFilePath: String?,
+    isCurrentSong: Boolean,
     isSongPlaying: Boolean,
     onClick: () -> Unit,
     dragHandleModifier: Modifier,
@@ -38,7 +39,7 @@ fun SongQueueListItem(
         onClick = onClick,
         isRippleBounded = true,
     ) {
-        val bgColor = if (isSongPlaying) colorKDB else Color.Transparent
+        val bgColor = if (isCurrentSong) colorKDB else Color.Transparent
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
@@ -82,6 +83,7 @@ private fun SongQueueListItemPreview() {
                 title = "Monica Lewinsky",
                 artistName = "SAINt JHN",
                 albumArtFilePath = null,
+                isCurrentSong = true,
                 isSongPlaying = playingIndex == 0,
                 onClick = { playingIndex = 0 },
                 dragHandleModifier = Modifier,
@@ -90,6 +92,7 @@ private fun SongQueueListItemPreview() {
                 title = "Monica Lewinsky",
                 artistName = "SAINt JHN",
                 albumArtFilePath = null,
+                isCurrentSong = false,
                 isSongPlaying = playingIndex == 1,
                 onClick = { playingIndex = 1 },
                 dragHandleModifier = Modifier,

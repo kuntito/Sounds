@@ -1,5 +1,6 @@
 package com.example.sounds.ui.components.song_playing.sp_queue
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -57,6 +58,7 @@ fun SongPlayingQueue(
                     title = song.title,
                     artistName = song.artistName,
                     albumArtFilePath = song.albumArtFilePath,
+                    isCurrentSong = playerState.currentSong == song,
                     isSongPlaying = playerState.currentSong == song && playerState.isPlaying,
                     onClick = {},
                     dragHandleModifier = Modifier
