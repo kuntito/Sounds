@@ -32,6 +32,7 @@ fun SongQueueListItem(
     albumArtFilePath: String?,
     isSongPlaying: Boolean,
     onClick: () -> Unit,
+    dragHandleModifier: Modifier,
 ) {
     ClickableSurface(
         onClick = onClick,
@@ -62,7 +63,8 @@ fun SongQueueListItem(
             )
             Spacer(modifier = Modifier.width(16.dp))
             AppIconButton(
-                iconRes = R.drawable.ic_drag_handle
+                iconRes = R.drawable.ic_drag_handle,
+                modifier = dragHandleModifier,
             ) { }
             Spacer(modifier = Modifier.width(4.dp))
         }
@@ -81,14 +83,16 @@ private fun SongQueueListItemPreview() {
                 artistName = "SAINt JHN",
                 albumArtFilePath = null,
                 isSongPlaying = playingIndex == 0,
-                onClick = { playingIndex = 0 }
+                onClick = { playingIndex = 0 },
+                dragHandleModifier = Modifier,
             )
             SongQueueListItem(
                 title = "Monica Lewinsky",
                 artistName = "SAINt JHN",
                 albumArtFilePath = null,
                 isSongPlaying = playingIndex == 1,
-                onClick = { playingIndex = 1 }
+                onClick = { playingIndex = 1 },
+                dragHandleModifier = Modifier,
             )
         }
     }

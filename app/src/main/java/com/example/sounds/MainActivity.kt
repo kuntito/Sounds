@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
                         onNext = songViewModel::onNextSong,
                         onPrev = songViewModel::onPreviousSong,
                         songQueue = songQueue,
+                        onSwapSong = songViewModel::onSwapSong,
                         modifier = Modifier
                             .padding(innerPadding),
                     )

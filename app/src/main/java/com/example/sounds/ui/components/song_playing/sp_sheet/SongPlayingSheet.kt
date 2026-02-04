@@ -21,10 +21,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import com.example.sounds.data.models.Song
-import com.example.sounds.data.models.dummySong
 import com.example.sounds.data.models.dummySongList
 import com.example.sounds.player.PlayerState
-import com.example.sounds.ui.components.song_playing.ControlSectionSongPlay
 import com.example.sounds.ui.components.song_playing.DraggableSheetState
 import com.example.sounds.ui.components.song_playing.SheetContainer
 import com.example.sounds.ui.components.song_playing.sp_queue.SongPlayingQueueSheet
@@ -67,6 +65,7 @@ fun SongPlayingSheet(
     onNext: () -> Unit,
     onPrev: () -> Unit,
     songQueue: List<Song>,
+    onSwapSong: (Int, Int) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val sheetState = rememberSheetState(
@@ -150,6 +149,7 @@ fun SongPlayingSheet(
                 SongPlayingQueueSheet(
                     playerState = playerState,
                     songQueue = songQueue,
+                    onSwapSong = onSwapSong,
                 )
             }
         }
@@ -177,6 +177,7 @@ private fun SongPlayingSheetPreview() {
             onNext = {},
             onPrev = {},
             songQueue = dummySongList,
+            onSwapSong = { _, _ ->  },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         )

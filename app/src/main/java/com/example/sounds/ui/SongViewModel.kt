@@ -72,6 +72,10 @@ class SongViewModel(
         }
     }
 
+    fun onSwapSong(fromIndex: Int, toIndex: Int) {
+        queueManager.swapSongs(fromIndex, toIndex)
+    }
+
     override fun onCleared() {
         super.onCleared()
         songPlayer.release()

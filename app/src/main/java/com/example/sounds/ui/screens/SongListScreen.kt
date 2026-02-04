@@ -25,6 +25,7 @@ fun SongPlayingScreen(
     onNext: () -> Unit,
     onPrev: () -> Unit,
     songQueue: List<Song>,
+    onSwapSong: (Int, Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -54,6 +55,7 @@ fun SongPlayingScreen(
                 onNext = onNext,
                 onPrev = onPrev,
                 songQueue = songQueue,
+                onSwapSong = onSwapSong,
             )
         }
     }
@@ -75,6 +77,7 @@ private fun SongPlayingScreenPreview() {
             onNext = {},
             onPrev = {},
             songQueue = dummySongList,
+            onSwapSong = { _, _ -> }
         )
     }
 }

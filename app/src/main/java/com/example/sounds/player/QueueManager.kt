@@ -31,4 +31,24 @@ class QueueManager {
         currentIndex--
         return queueOfSongs.value[currentIndex]
     }
+
+    fun swapSongs(fromIndex: Int, toIndex: Int) {
+        _queueOfSongs.value = _queueOfSongs.value.toMutableList().apply {
+            add(toIndex, removeAt(fromIndex))
+        }
+
+        updateCurrentIndexAfterSwap(fromIndex, toIndex)
+    }
+
+    fun updateCurrentIndexAfterSwap(fromIndex: Int, toIndex: Int) {
+        val isDragFromBeforeToAfterCurrentSong = fromIndex < currentIndex && toIndex >= currentIndex
+        val isDragFromAfterToBeforeCurrentSong = fromIndex > currentIndex && toIndex <= currentIndex
+        if (fromIndex == currentIndex) {
+            currentIndex = toIndex
+        } else if (isDragFromBeforeToAfterCurrentSong) {
+            currentIndex--
+        } else if (isDragFromAfterToBeforeCurrentSong) {
+            currentIndex++
+        }
+    }
 }

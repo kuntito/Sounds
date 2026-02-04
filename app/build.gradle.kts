@@ -63,6 +63,9 @@ dependencies {
     // image loading
     implementation(libs.coil.compose)
 
+    // drag and drop reordering
+    implementation(libs.reorderable)
+
     // local database
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
