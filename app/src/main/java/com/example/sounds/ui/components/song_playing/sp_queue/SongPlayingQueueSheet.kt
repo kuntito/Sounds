@@ -36,6 +36,7 @@ fun SongPlayingQueueSheet(
     currentSong: Song?,
     songQueue: List<Song>,
     onSwapSong: (Int, Int) -> Unit,
+    onSongItemClick: (Int, List<Song>) -> Unit,
 ) {
     val minHeight = 48
     val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -98,6 +99,7 @@ fun SongPlayingQueueSheet(
                 currentSong = currentSong,
                 songQueue = songQueue,
                 onSwapSong = onSwapSong,
+                onSongItemClick = onSongItemClick,
             )
 
         }
@@ -122,6 +124,7 @@ private fun SongPlayingQueueSheetPreview() {
             currentSong = dummySongList[3],
             songQueue = dummySongList,
             onSwapSong = { _, _ -> },
+            onSongItemClick = { _, _ -> }
         )
     }
 }

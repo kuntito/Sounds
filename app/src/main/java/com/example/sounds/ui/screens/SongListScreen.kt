@@ -63,6 +63,7 @@ fun SongPlayingScreen(
                 currentSong = currentSong,
                 prevSongAAFP = prevSongAAFP,
                 nextSongAAFP = nextSongAAFP,
+                onSongItemClick = onSongItemClick,
             )
         }
     }

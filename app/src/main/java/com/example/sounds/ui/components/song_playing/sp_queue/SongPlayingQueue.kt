@@ -1,7 +1,7 @@
 package com.example.sounds.ui.components.song_playing.sp_queue
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +26,7 @@ fun SongPlayingQueue(
     currentSong: Song?,
     songQueue: List<Song>,
     onSwapSong: (Int, Int) -> Unit,
+    onSongItemClick: (Int, List<Song>) -> Unit,
 ) {
     val currentSongIdx = songQueue.indexOfFirst {
         it.id == currentSong?.id
@@ -46,7 +47,10 @@ fun SongPlayingQueue(
         modifier = modifier,
     ) {
 
-        items(songQueue, key = {it.id}) { song ->
+        itemsIndexed(
+            songQueue,
+            key = { _ , song -> song.id }
+        ) { index, song ->
             ReorderableItem(
                 reorderableListState,
                 key = song.id
@@ -57,7 +61,9 @@ fun SongPlayingQueue(
                     albumArtFilePath = song.albumArtFilePath,
                     isCurrentSong = currentSong == song,
                     isSongPlaying = currentSong == song && playerState.isPlaying,
-                    onClick = {},
+                    onClick = {
+                        onSongItemClick(index, songQueue)
+                    },
                     dragHandleModifier = Modifier
                         .draggableHandle()
                 )
@@ -87,6 +93,7 @@ private fun SongPlayingQueuePreview() {
             currentSong = currentSong,
             songQueue = songQueue,
             onSwapSong = onReorder,
+            onSongItemClick = { _, _ -> }
         )
     }
 }

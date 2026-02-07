@@ -73,6 +73,7 @@ fun SongPlayingSheet(
     prevSongAAFP: String?,
     nextSongAAFP: String?,
     onSwapSong: (Int, Int) -> Unit,
+    onSongItemClick: (Int, List<Song>) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val sheetState = rememberSheetState(
@@ -177,6 +178,7 @@ fun SongPlayingSheet(
                     songQueue = songQueue,
                     onSwapSong = onSwapSong,
                     currentSong = currentSong,
+                    onSongItemClick = onSongItemClick
                 )
             }
         }
@@ -207,6 +209,7 @@ private fun SongPlayingSheetPreview() {
             onSwapSong = { _, _ ->  },
             prevSongAAFP = null,
             nextSongAAFP = null,
+            onSongItemClick = { _, _ -> },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         )
