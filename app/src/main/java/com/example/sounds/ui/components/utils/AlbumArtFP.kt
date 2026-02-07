@@ -18,7 +18,7 @@ import com.example.sounds.ui.theme.colorTelli
 import java.io.File
 
 @Composable
-fun AlbumArt(
+fun AlbumArtFP(
     modifier: Modifier = Modifier,
     filePath: String?,
     loadSize: Int? = null,
@@ -45,7 +45,7 @@ fun AlbumArt(
         placeholder = painterResource(R.drawable.album_art_placeholder),
         error = painterResource(R.drawable.album_art_placeholder),
         fallback = painterResource(R.drawable.album_art_placeholder),
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Fit,
         modifier = modifier
             .border(
                 width = 0.1.dp,
@@ -58,8 +58,8 @@ fun AlbumArt(
 
 @Preview
 @Composable
-private fun AlbumArtPreview() {
+private fun AlbumArtFPPreview() {
     PreviewColumn {
-        AlbumArt(filePath = null)
+        AlbumArtFP(filePath = null)
     }
 }

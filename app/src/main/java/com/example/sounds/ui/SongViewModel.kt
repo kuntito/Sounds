@@ -18,8 +18,13 @@ class SongViewModel(
 ): ViewModel() {
     private val songPlayer = SongPlayer(viewModelScope)
     val playerState = songPlayer.playerState
-    private val queueManager = QueueManager()
+    private val queueManager = QueueManager(viewModelScope)
     val songQueue = queueManager.queueOfSongs
+
+    val currentSong = queueManager.currentSong
+    val previousSong = queueManager.previousSong
+    val nextSong = queueManager.nextSong
+
 
     val songs: StateFlow<List<Song>> = repository.getSongs()
         .map { entities -> entities.map{ it.toSong() } }

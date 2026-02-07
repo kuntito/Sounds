@@ -24,8 +24,11 @@ fun SongPlayingScreen(
     onSeekTo: (Float) -> Unit,
     onNext: () -> Unit,
     onPrev: () -> Unit,
+    currentSong: Song?,
     songQueue: List<Song>,
     onSwapSong: (Int, Int) -> Unit,
+    prevSongAAFP: String?,
+    nextSongAAFP: String?,
     modifier: Modifier = Modifier,
 ) {
 
@@ -40,9 +43,10 @@ fun SongPlayingScreen(
             bottomEdgePadding = miniPlayerHeight * 1.2f,
             playerState = playerState,
             onSongItemClick = onSongItemClick,
+            currentSong = currentSong,
         )
         AnimatedVisibility(
-            visible = playerState.currentSong != null,
+            visible = currentSong != null,
             modifier = Modifier
                 .align(Alignment.BottomCenter),
         ) {
@@ -56,6 +60,9 @@ fun SongPlayingScreen(
                 onPrev = onPrev,
                 songQueue = songQueue,
                 onSwapSong = onSwapSong,
+                currentSong = currentSong,
+                prevSongAAFP = prevSongAAFP,
+                nextSongAAFP = nextSongAAFP,
             )
         }
     }
@@ -77,6 +84,9 @@ private fun SongPlayingScreenPreview() {
             onNext = {},
             onPrev = {},
             songQueue = dummySongList,
+            currentSong = null,
+            prevSongAAFP = null,
+            nextSongAAFP = null,
             onSwapSong = { _, _ -> }
         )
     }

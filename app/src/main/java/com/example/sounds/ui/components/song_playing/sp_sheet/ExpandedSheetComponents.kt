@@ -1,37 +1,45 @@
 package com.example.sounds.ui.components.song_playing.sp_sheet
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySongList
 import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.song_playing.ControlSectionSongPlay
-import com.example.sounds.ui.components.song_playing.sp_queue.SongPlayingQueueSheet
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
 fun ExpandedSheetComponents(
     modifier: Modifier = Modifier,
+    currentSong: Song?,
     playerState: PlayerState,
     onPlay: () -> Unit,
     onPause: () -> Unit,
     onSeekTo: (Float) -> Unit,
     onNext: () -> Unit,
     onPrev: () -> Unit,
-    songQueue: List<Song>,
+    isSwipingToAnotherSong: Boolean = false,
 ) {
-    playerState.currentSong?.let { currentSong ->
+    currentSong?.let { currentSong ->
+        val alpha by animateFloatAsState(
+            targetValue = if (isSwipingToAnotherSong) 0f else 1f
+        )
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
                 .fillMaxWidth()
+                .alpha(alpha)
             ,
         ) {
             Spacer(modifier = Modifier.height(32.dp))
@@ -61,8 +69,8 @@ private fun ExpandedSheetComponentsPreview() {
     PreviewColumn {
         val currentSong = dummySongList[2]
         ExpandedSheetComponents(
+            currentSong = currentSong,
             playerState = PlayerState(
-                currentSong = currentSong,
                 isPlaying = true,
             ),
             onPlay = {},
@@ -70,7 +78,6 @@ private fun ExpandedSheetComponentsPreview() {
             onSeekTo = {},
             onNext = {},
             onPrev = {},
-            songQueue = dummySongList,
         )
     }
 }

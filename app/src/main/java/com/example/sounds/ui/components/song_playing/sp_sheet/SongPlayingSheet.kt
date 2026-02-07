@@ -5,14 +5,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -25,6 +28,7 @@ import com.example.sounds.data.models.dummySongList
 import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.song_playing.DraggableSheetState
 import com.example.sounds.ui.components.song_playing.SheetContainer
+import com.example.sounds.ui.components.song_playing.SwipeableAlbumArt
 import com.example.sounds.ui.components.song_playing.sp_queue.SongPlayingQueueSheet
 import com.example.sounds.ui.theme.colorAguero
 import com.example.sounds.ui.theme.colorKDB
@@ -65,6 +69,9 @@ fun SongPlayingSheet(
     onNext: () -> Unit,
     onPrev: () -> Unit,
     songQueue: List<Song>,
+    currentSong: Song?,
+    prevSongAAFP: String?,
+    nextSongAAFP: String?,
     onSwapSong: (Int, Int) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -74,10 +81,12 @@ fun SongPlayingSheet(
     )
 
     val containerColor = if (sheetState.isCollapsed) colorAguero else colorKDB
-    playerState.currentSong?.let { currentSong ->
+    currentSong?.let { currentSong ->
         BackHandler(enabled = sheetState.isExpanded) {
             sheetState.collapse()
         }
+
+        var isSwipingToAnotherSong by remember { mutableStateOf(false) }
         Box(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier.fillMaxSize()
@@ -102,16 +111,32 @@ fun SongPlayingSheet(
                         )
                     )
                 }
-                val horizontalPadding = 16
                 Row(
                     modifier = Modifier
                 ) {
-                    ExpandableAlbumArtSP(
-                        fractionOfSheetExpanded = sheetState.fractionOfSheetExpanded,
-                        miniPlayerHeight = miniPlayerHeight,
-                        horizontalPadding = horizontalPadding,
-                        albumArtFilePath = currentSong.albumArtFilePath,
-                    )
+                    val horizontalPadding = 16
+                    val screenWidth = LocalConfiguration.current.screenWidthDp
+                    val minImageSize = 32
+                    val maxImageSize = 256
+                    SwipeableAlbumArt(
+                        currentAAFP = currentSong.albumArtFilePath,
+                        truePrevAAFP = prevSongAAFP,
+                        trueNextAAFP = nextSongAAFP,
+                        onSwipeNextSong = onNext,
+                        onSwipePrevSong = onPrev,
+                        isSwipeEnabled = sheetState.isExpanded,
+                        maxImageSize = maxImageSize,
+                        onSwiping = { isSwipingToAnotherSong = it },
+                        modifier = Modifier
+                            .albumArtAnimatedModifier(
+                                    horizontalPadding = horizontalPadding,
+                                    miniPlayerHeight = miniPlayerHeight,
+                                    minImageSize = minImageSize,
+                                    screenWidth = screenWidth,
+                                    maxImageSize = maxImageSize,
+                                    fractionExpanded = sheetState.fractionOfSheetExpanded,
+                                )
+                            )
                     if(sheetState.isCollapsed) {
                         MiniPlayerSongPlaying(
                             heightDp = miniPlayerHeight,
@@ -141,7 +166,8 @@ fun SongPlayingSheet(
                         onSeekTo = onSeekTo,
                         onPrev = onPrev,
                         onNext = onNext,
-                        songQueue = songQueue,
+                        isSwipingToAnotherSong = isSwipingToAnotherSong,
+                        currentSong = currentSong,
                     )
                 }
             }
@@ -150,6 +176,7 @@ fun SongPlayingSheet(
                     playerState = playerState,
                     songQueue = songQueue,
                     onSwapSong = onSwapSong,
+                    currentSong = currentSong,
                 )
             }
         }
@@ -168,7 +195,6 @@ private fun SongPlayingSheetPreview() {
         SongPlayingSheet(
             miniPlayerHeight = 48,
             playerState = PlayerState(
-                currentSong = currentSong,
                 isPlaying = true,
             ),
             onPlay = {},
@@ -177,12 +203,61 @@ private fun SongPlayingSheetPreview() {
             onNext = {},
             onPrev = {},
             songQueue = dummySongList,
+            currentSong = currentSong,
             onSwapSong = { _, _ ->  },
+            prevSongAAFP = null,
+            nextSongAAFP = null,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         )
     }
 }
 
-
-
+/**
+ * the album art is part of the `SongPlayingSheet`, it starts in a mini player
+ *
+ * this mini player appears at the bottom of the screen.
+ *
+ * in this state, the album art component has padding on left and right sides.
+ * as the sheet expands, it enlarges and the padding reduces to zero.
+ *
+ * note: the album art stays centered even at `0dp` padding because
+ * its parent component handles the centering when sheet is fully expanded.
+ */
+private fun Modifier.albumArtAnimatedModifier(
+    horizontalPadding: Int,
+    miniPlayerHeight: Int,
+    minImageSize: Int,
+    screenWidth: Int,
+    maxImageSize: Int,
+    fractionExpanded: Float,
+): Modifier = this
+    .padding(
+        // horizontal padding animates from left-aligned to center position.
+        // centering achieved by calculating padding needed:
+        // `(screenWidth - imageSize) / 2`
+        horizontal = lerp(
+            horizontalPadding.dp,
+            0.dp,
+            fractionExpanded,
+        ),
+        vertical = lerp(
+            start = ((miniPlayerHeight - minImageSize) / 2).dp,
+            stop = 0.dp,
+            fractionExpanded,
+        )
+    )
+    .width(
+        lerp(
+            minImageSize.dp,
+            screenWidth.dp,
+            fractionExpanded
+        )
+    )
+    .height(
+        lerp(
+            minImageSize.dp,
+            maxImageSize.dp,
+            fractionExpanded
+        )
+    )

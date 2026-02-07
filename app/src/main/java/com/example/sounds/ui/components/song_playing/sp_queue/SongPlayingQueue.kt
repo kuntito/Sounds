@@ -1,6 +1,5 @@
 package com.example.sounds.ui.components.song_playing.sp_queue
 
-import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -18,20 +17,18 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
-
-// TODO implement song drag within queue...
-
 // TODO also, dragging this queue up isn't smooth
 @Composable
 fun SongPlayingQueue(
     modifier: Modifier = Modifier,
     isScrollEnabled: Boolean,
     playerState: PlayerState,
+    currentSong: Song?,
     songQueue: List<Song>,
     onSwapSong: (Int, Int) -> Unit,
 ) {
     val currentSongIdx = songQueue.indexOfFirst {
-        it.id == playerState.currentSong?.id
+        it.id == currentSong?.id
     }
     val listState = rememberLazyListState(
         initialFirstVisibleItemIndex = if (currentSongIdx == -1) 0 else currentSongIdx
@@ -58,8 +55,8 @@ fun SongPlayingQueue(
                     title = song.title,
                     artistName = song.artistName,
                     albumArtFilePath = song.albumArtFilePath,
-                    isCurrentSong = playerState.currentSong == song,
-                    isSongPlaying = playerState.currentSong == song && playerState.isPlaying,
+                    isCurrentSong = currentSong == song,
+                    isSongPlaying = currentSong == song && playerState.isPlaying,
                     onClick = {},
                     dragHandleModifier = Modifier
                         .draggableHandle()
@@ -76,7 +73,6 @@ private fun SongPlayingQueuePreview() {
         var songQueue by remember { mutableStateOf(dummySongList) }
         val currentSong = remember {  songQueue[2] }
         val playerState = PlayerState(
-            currentSong = currentSong,
             isPlaying = true,
         )
         val onReorder: (Int, Int) -> Unit = { fromIndex, toIndex ->
@@ -88,6 +84,7 @@ private fun SongPlayingQueuePreview() {
         SongPlayingQueue(
             isScrollEnabled = true,
             playerState = playerState,
+            currentSong = currentSong,
             songQueue = songQueue,
             onSwapSong = onReorder,
         )

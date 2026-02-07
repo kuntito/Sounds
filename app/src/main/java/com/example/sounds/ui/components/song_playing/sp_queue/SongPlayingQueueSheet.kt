@@ -33,6 +33,7 @@ import com.example.sounds.ui.theme.colorKDB
 fun SongPlayingQueueSheet(
     modifier: Modifier = Modifier,
     playerState: PlayerState,
+    currentSong: Song?,
     songQueue: List<Song>,
     onSwapSong: (Int, Int) -> Unit,
 ) {
@@ -94,6 +95,7 @@ fun SongPlayingQueueSheet(
             SongPlayingQueue(
                 isScrollEnabled = sheetState.isExpanded,
                 playerState = playerState,
+                currentSong = currentSong,
                 songQueue = songQueue,
                 onSwapSong = onSwapSong,
             )
@@ -115,9 +117,9 @@ private fun SongPlayingQueueSheetPreview() {
 
         SongPlayingQueueSheet(
             playerState = PlayerState(
-                currentSong = dummySongList[3],
                 isPlaying = true,
             ),
+            currentSong = dummySongList[3],
             songQueue = dummySongList,
             onSwapSong = { _, _ -> },
         )

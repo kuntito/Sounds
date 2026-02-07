@@ -1,7 +1,6 @@
 package com.example.sounds.ui.components.song_list_item
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,17 +17,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.example.sounds.R
-import com.example.sounds.ui.components.utils.AlbumArt
+import com.example.sounds.ui.components.utils.AlbumArtFP
 import com.example.sounds.ui.components.utils.PreviewColumn
 import com.example.sounds.ui.theme.colorTelli
 import kotlinx.coroutines.delay
-import java.io.File
 
 @Composable
 fun AlbumArtSLI(
@@ -48,7 +42,7 @@ fun AlbumArtSLI(
             .clip(shape = boxShape)
             .size(size.dp)
     ) {
-        AlbumArt(
+        AlbumArtFP(
             filePath = albumArtFilePath,
             modifier = Modifier
                 .fillMaxSize()
