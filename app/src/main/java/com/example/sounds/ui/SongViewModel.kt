@@ -35,6 +35,14 @@ class SongViewModel(
             initialValue = emptyList(),
         )
 
+    init {
+        viewModelScope.launch {
+            songPlayer.onPlaybackComplete.collect {
+                onNextSong()
+            }
+        }
+    }
+
     fun onSongItemClick(
         indexClickedSong: Int,
         songList: List<Song>,

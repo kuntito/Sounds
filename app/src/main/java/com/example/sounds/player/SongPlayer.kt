@@ -6,8 +6,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -31,9 +33,15 @@ class SongPlayer(private val scope: CoroutineScope) {
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState: StateFlow<PlayerState> = _playerState.asStateFlow()
 
+    private val _onPlaybackComplete = MutableSharedFlow<Unit>()
+    val onPlaybackComplete = _onPlaybackComplete.asSharedFlow()
+
     private var positionUpdateJob: Job? = null
 
-    fun play(song: Song, filePath: String) {
+    fun play(
+        song: Song,
+        filePath: String
+    ) {
         scope.launch(Dispatchers.IO) {
             try {
 
@@ -104,6 +112,7 @@ class SongPlayer(private val scope: CoroutineScope) {
                     isPlaying = false,
                     currentPositionMs = 0,
                 )
+                scope.launch { _onPlaybackComplete.emit(Unit) }
             }
             prepare()
             start()
