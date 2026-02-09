@@ -66,6 +66,9 @@ dependencies {
     // drag and drop reordering
     implementation(libs.reorderable)
 
+    // media session
+    implementation(libs.androidx.media)
+
     // local database
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)

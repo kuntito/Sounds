@@ -1,13 +1,178 @@
 package com.example.sounds.player
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.IBinder
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import androidx.media.app.NotificationCompat.MediaStyle
 
+// a foreground service is work the app is doing that you want to show in the notifications pane
+// every notification has a channel, think, a container where notifications can pop up
+// `notificationId`, uniquely identifies every notification within that channel
+
+// so, what's the order
+
+// `onCreate` is called when the object is created.
+
+// this calls the method, that creates the notification channel.
+
+//then initializes the mediaSession..
+
+//then to actually use the class, you call `onStartCommand`
+//however, this isn't called directly by you, Android calls this under the hood.
+
+//you start the service, `MusicForegroundService`, via startForegroundService(intent)
+
+//this builds the UI for the notification
+//and starts the foreground service..
+
+//START_STICKY ensures.. if Android kills or attempts to kill the service.
+//it spawns right back up
 class MusicForegroundService: Service() {
+    private val channelId = "music_playback"
+    private val channelName = "Music Playback"
+    private val notificationId = 1
+
+    private lateinit var mediaSessionCompat: MediaSessionCompat
+    private val mediaSessionTag = "soundsMediaSession"
+
+    fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_LOW,
+            )
+
+            getSystemService(
+                NotificationManager::class.java
+            )
+                .createNotificationChannel(notificationChannel)
+        }
+    }
+
+    private fun getActionIntent(action: String): PendingIntent {
+        val intent = Intent(this, MusicForegroundService::class.java).apply {
+            this.action = action
+        }
+        return PendingIntent.getService(
+            this,
+            action.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    private fun buildMusicPlayerNotification(
+        isPlayingSong: Boolean,
+        songTitle: String,
+        songArtistName: String,
+        albumArtFilePath: String,
+    ): Notification {
+        val playPauseIcon = if (isPlayingSong) {
+            android.R.drawable.ic_media_pause
+        } else {
+            android.R.drawable.ic_media_play
+        }
+
+        return NotificationCompat.Builder(this, channelId)
+            .setContentTitle(songTitle)
+            .setContentText(songArtistName)
+            .setSmallIcon(android.R.drawable.ic_media_play)
+            .setStyle(
+                MediaStyle()
+                    .setMediaSession(mediaSessionCompat.sessionToken)
+                    .setShowActionsInCompactView(0)
+            )
+            .setLargeIcon(BitmapFactory.decodeFile(albumArtFilePath))
+            .addAction(
+                playPauseIcon,
+                "Play/Pause",
+                getActionIntent(ACTION_PAUSE_PLAY_SONG)
+            )
+            .build()
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        createNotificationChannel()
+
+        mediaSessionCompat = MediaSessionCompat(this, mediaSessionTag).apply {
+            isActive = true
+            setCallback(object : MediaSessionCompat.Callback() {
+                override fun onPlay() {
+                    sendBroadcast(Intent(ACTION_PAUSE_PLAY_SONG))
+                }
+                override fun onPause() {
+                    sendBroadcast(Intent(ACTION_PAUSE_PLAY_SONG))
+                }
+            })
+        }
+    }
+
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            ACTION_PLAYER_STATE_UPDATE -> {
+                val songTitle = intent.getStringExtra(EXTRA_SONG_TITLE) ?: "Unknown"
+                val songArtist = intent.getStringExtra(EXTRA_SONG_ARTIST) ?: "Unknown"
+                val albumArtFilePath = intent.getStringExtra(EXTRA_AAFP) ?: "Unknown"
+                val isPlayingSong = intent.getBooleanExtra(
+                    EXTRA_IS_SONG_PLAYING, false
+                )
+
+                val musicPlayerNotification = buildMusicPlayerNotification(
+                    isPlayingSong,
+                    songTitle,
+                    songArtist,
+                    albumArtFilePath,
+                )
+
+
+                startForeground(
+                    notificationId,
+                    musicPlayerNotification,
+                )
+
+                val playbackState = if (isPlayingSong) {
+                    PlaybackStateCompat.STATE_PLAYING
+                } else {
+                    PlaybackStateCompat.STATE_PAUSED
+                }
+
+                // this brings the notification in front of other music player notifications
+                mediaSessionCompat.setPlaybackState(
+                    PlaybackStateCompat.Builder()
+                        .setState(playbackState, 0L, 1f)
+                        .setActions(
+                            PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        )
+                        .build()
+                )
+            }
+        }
+
         return START_STICKY
+    }
+
+    companion object {
+        const val ACTION_PAUSE_PLAY_SONG = "PLAY_PAUSE_SONG"
+        const val ACTION_PLAYER_STATE_UPDATE = "PLAYER_STATE_UPDATE"
+
+        const val EXTRA_SONG_TITLE = "SONG_TITLE"
+        const val EXTRA_SONG_ARTIST = "SONG_ARTIST"
+        const val EXTRA_AAFP = "AAFP"
+        const val EXTRA_IS_SONG_PLAYING = "IS_PLAYING_SONG"
+
     }
 }

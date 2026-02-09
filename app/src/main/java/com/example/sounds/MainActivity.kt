@@ -31,7 +31,12 @@ class MainActivity : ComponentActivity() {
             context = applicationContext
         )
 
-        val songViewModel: SongViewModel by viewModels { SongViewModelFactory(repository) }
+        val songViewModel: SongViewModel by viewModels {
+            SongViewModelFactory(
+                application,
+                repository
+            )
+        }
 
         enableEdgeToEdge()
         setContent {

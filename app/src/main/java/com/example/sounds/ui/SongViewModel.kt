@@ -1,21 +1,30 @@
 package com.example.sounds.ui
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sounds.data.SoundsRepository
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.toSong
+import com.example.sounds.player.MusicForegroundService
 import com.example.sounds.player.QueueManager
 import com.example.sounds.player.SongPlayer
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class SongViewModel(
+    application: Application,
     private val repository: SoundsRepository,
-): ViewModel() {
+): AndroidViewModel(application) {
     private val songPlayer = SongPlayer(viewModelScope)
     val playerState = songPlayer.playerState
     private val queueManager = QueueManager(viewModelScope)
@@ -35,12 +44,54 @@ class SongViewModel(
             initialValue = emptyList(),
         )
 
+
+    private val playPauseReceiver = object: BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            if (playerState.value.isPlaying) {
+                pauseSong()
+            }
+            else {
+                playerState.value.loadedSong?.let { playSong(it) }
+            }
+        }
+    }
+
+
     init {
         viewModelScope.launch {
             songPlayer.onPlaybackComplete.collect {
                 onNextSong()
             }
         }
+
+        viewModelScope.launch {
+            playerState
+                .distinctUntilChangedBy { Pair(it.loadedSong, it.isPlaying) }
+                .collect { state ->
+                    val song = state.loadedSong ?: return@collect
+
+                    val intent = Intent(
+                        getApplication(),
+                        MusicForegroundService::class.java,
+                    ).apply {
+                        action = MusicForegroundService.ACTION_PLAYER_STATE_UPDATE
+
+                        putExtra(MusicForegroundService.EXTRA_SONG_TITLE, song.title)
+                        putExtra(MusicForegroundService.EXTRA_SONG_ARTIST, song.artistName)
+                        putExtra(MusicForegroundService.EXTRA_AAFP, song.albumArtFilePath)
+                        putExtra(MusicForegroundService.EXTRA_IS_SONG_PLAYING, state.isPlaying)
+                    }
+                    ContextCompat.startForegroundService(getApplication(), intent)
+            }
+        }
+
+        val intentFilter = IntentFilter(MusicForegroundService.ACTION_PAUSE_PLAY_SONG)
+        ContextCompat.registerReceiver(
+            getApplication(),
+            playPauseReceiver,
+            intentFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
     }
 
     fun onSongItemClick(
@@ -56,6 +107,7 @@ class SongViewModel(
     fun playSong(song: Song) {
         viewModelScope.launch {
             val path = repository.getLocalPath(song.id) ?: return@launch
+
             songPlayer.play(
                 song = song,
                 filePath = path,
@@ -92,5 +144,6 @@ class SongViewModel(
     override fun onCleared() {
         super.onCleared()
         songPlayer.release()
+        getApplication<Application>().unregisterReceiver(playPauseReceiver)
     }
 }

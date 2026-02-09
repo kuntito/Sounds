@@ -1,6 +1,7 @@
 package com.example.sounds.player
 
 import android.media.MediaPlayer
+import android.util.Log
 import com.example.sounds.data.models.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class PlayerState(
+    val loadedSong: Song? = null,
     val isPlaying: Boolean = false,
     val currentPositionMs: Int = 0,
     val durationMs: Int = 0,
@@ -28,7 +30,6 @@ data class PlayerState(
 
 class SongPlayer(private val scope: CoroutineScope) {
     private var mediaPlayer: MediaPlayer? = null
-    private var currentSongId: String? = null
 
     private val _playerState = MutableStateFlow(PlayerState())
     val playerState: StateFlow<PlayerState> = _playerState.asStateFlow()
@@ -45,10 +46,13 @@ class SongPlayer(private val scope: CoroutineScope) {
         scope.launch(Dispatchers.IO) {
             try {
 
-                val isNewSong = currentSongId != song.id
+                val isNewSong = _playerState.value.loadedSong?.id != song.id
 
                 if (isNewSong) {
                     startPlayback(filePath)
+                    _playerState.value = _playerState.value.copy(
+                        loadedSong = song
+                    )
                 } else {
                     mediaPlayer?.start()
                 }
