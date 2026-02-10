@@ -12,6 +12,8 @@ import android.os.IBinder
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
+import android.view.KeyEvent
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import com.example.sounds.MainActivity
@@ -150,6 +152,40 @@ class MusicForegroundService: Service() {
                         Intent(Actions.ACTION_SEEK_TO)
                             .putExtra(Extras.EXTRA_SEEK_POSITION, pos)
                     )
+                }
+
+                override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+
+                    val keyEvent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        mediaButtonEvent?.getParcelableExtra(
+                            Intent.EXTRA_KEY_EVENT,
+                            KeyEvent::class.java
+                        )
+                    } else {
+                        @Suppress("DEPRECATION")
+                        mediaButtonEvent?.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
+                    }
+
+                    if (keyEvent?.action == KeyEvent.ACTION_DOWN) {
+                        when(keyEvent.keyCode) {
+                            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE,
+                            KeyEvent.KEYCODE_HEADSETHOOK,
+                            KeyEvent.KEYCODE_MEDIA_PLAY,
+                            KeyEvent.KEYCODE_MEDIA_PAUSE -> {
+                                sendBroadcast(Intent(Actions.ACTION_PAUSE_PLAY_SONG))
+                                return true
+                            }
+                            KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                                sendBroadcast(Intent(Actions.ACTION_NEXT_SONG))
+                                return true
+                            }
+                            KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                                sendBroadcast(Intent(Actions.ACTION_PREVIOUS_SONG))
+                                return true
+                            }
+                        }
+                    }
+                    return super.onMediaButtonEvent(mediaButtonEvent)
                 }
             })
         }
