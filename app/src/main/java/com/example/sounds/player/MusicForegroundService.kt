@@ -45,7 +45,7 @@ class MusicForegroundService: Service() {
     private lateinit var mediaSessionCompat: MediaSessionCompat
     private val mediaSessionTag = "soundsMediaSession"
 
-    fun createNotificationChannel() {
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannel = NotificationChannel(
                 channelId,
@@ -148,62 +148,64 @@ class MusicForegroundService: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            Actions.ACTION_PLAYER_STATE_UPDATE -> {
-                val songTitle = intent.getStringExtra(Extras.EXTRA_SONG_TITLE) ?: "Unknown"
-                val songArtist = intent.getStringExtra(Extras.EXTRA_SONG_ARTIST) ?: "Unknown"
-                val albumArtFilePath = intent.getStringExtra(Extras.EXTRA_AAFP) ?: "Unknown"
-                val isPlayingSong = intent.getBooleanExtra(
-                    Extras.EXTRA_IS_SONG_PLAYING, false
-                )
-                val currentPositionMs = intent.getLongExtra(Extras.EXTRA_CURRENT_POSITION_MS, 0L)
-                val durationMs = intent.getLongExtra(Extras.EXTRA_DURATION_MS, 0L)
-
-
-                val musicPlayerNotification = buildMusicPlayerNotification(
-                    isPlayingSong,
-                    songTitle,
-                    songArtist,
-                    albumArtFilePath,
-                )
-
-
-                startForeground(
-                    notificationId,
-                    musicPlayerNotification,
-                )
-
-                val playbackState = if (isPlayingSong) {
-                    PlaybackStateCompat.STATE_PLAYING
-                } else {
-                    PlaybackStateCompat.STATE_PAUSED
-                }
-
-                // this brings the notification in front of other music player notifications
-                mediaSessionCompat.setPlaybackState(
-                    PlaybackStateCompat.Builder()
-                        .setState(
-                            playbackState,
-                            currentPositionMs,
-                            if (isPlayingSong) 1f else 0f
-                        )
-                        .setActions(
-                            PlaybackStateCompat.ACTION_PLAY_PAUSE
-                             or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                             or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
-                             or PlaybackStateCompat.ACTION_SEEK_TO
-                        )
-                        .build()
-                )
-
-                mediaSessionCompat.setMetadata(
-                    MediaMetadataCompat.Builder()
-                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMs)
-                        .build()
-                )
-            }
+            Actions.ACTION_PLAYER_STATE_UPDATE -> { handlePlayerStateUpdate(intent) }
         }
 
         return START_STICKY
+    }
+
+    private fun handlePlayerStateUpdate(intent: Intent) {
+        val songTitle = intent.getStringExtra(Extras.EXTRA_SONG_TITLE) ?: "Unknown"
+        val songArtist = intent.getStringExtra(Extras.EXTRA_SONG_ARTIST) ?: "Unknown"
+        val albumArtFilePath = intent.getStringExtra(Extras.EXTRA_AAFP) ?: "Unknown"
+        val isPlayingSong = intent.getBooleanExtra(
+            Extras.EXTRA_IS_SONG_PLAYING, false
+        )
+        val currentPositionMs = intent.getLongExtra(Extras.EXTRA_CURRENT_POSITION_MS, 0L)
+        val durationMs = intent.getLongExtra(Extras.EXTRA_DURATION_MS, 0L)
+
+
+        val musicPlayerNotification = buildMusicPlayerNotification(
+            isPlayingSong,
+            songTitle,
+            songArtist,
+            albumArtFilePath,
+        )
+
+
+        startForeground(
+            notificationId,
+            musicPlayerNotification,
+        )
+
+        val playbackState = if (isPlayingSong) {
+            PlaybackStateCompat.STATE_PLAYING
+        } else {
+            PlaybackStateCompat.STATE_PAUSED
+        }
+
+        // this brings the notification in front of other music player notifications
+        mediaSessionCompat.setPlaybackState(
+            PlaybackStateCompat.Builder()
+                .setState(
+                    playbackState,
+                    currentPositionMs,
+                    if (isPlayingSong) 1f else 0f
+                )
+                .setActions(
+                    PlaybackStateCompat.ACTION_PLAY_PAUSE
+                            or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                            or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                            or PlaybackStateCompat.ACTION_SEEK_TO
+                )
+                .build()
+        )
+
+        mediaSessionCompat.setMetadata(
+            MediaMetadataCompat.Builder()
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMs)
+                .build()
+        )
     }
 
     object Actions {
