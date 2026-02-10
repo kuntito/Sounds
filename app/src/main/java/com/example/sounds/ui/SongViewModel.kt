@@ -47,7 +47,7 @@ class SongViewModel(
     private val playerNotificationBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             when (p1?.action) {
-                MusicForegroundService.ACTION_PAUSE_PLAY_SONG -> {
+                MusicForegroundService.Actions.ACTION_PAUSE_PLAY_SONG -> {
                     if (playerState.value.isPlaying) {
                         pauseSong()
                     } else {
@@ -55,11 +55,11 @@ class SongViewModel(
                     }
                 }
 
-                MusicForegroundService.ACTION_NEXT_SONG -> onNextSong()
-                MusicForegroundService.ACTION_PREVIOUS_SONG -> onPreviousSong()
-                MusicForegroundService.ACTION_SEEK_TO -> {
+                MusicForegroundService.Actions.ACTION_NEXT_SONG -> onNextSong()
+                MusicForegroundService.Actions.ACTION_PREVIOUS_SONG -> onPreviousSong()
+                MusicForegroundService.Actions.ACTION_SEEK_TO -> {
                     val pos = p1.getLongExtra(
-                        MusicForegroundService.EXTRA_SEEK_POSITION,
+                        MusicForegroundService.Extras.EXTRA_SEEK_POSITION,
                         0L
                     )
                     val durationMs = playerState.value.durationMs
@@ -90,24 +90,24 @@ class SongViewModel(
                         getApplication(),
                         MusicForegroundService::class.java,
                     ).apply {
-                        action = MusicForegroundService.ACTION_PLAYER_STATE_UPDATE
+                        action = MusicForegroundService.Actions.ACTION_PLAYER_STATE_UPDATE
 
-                        putExtra(MusicForegroundService.EXTRA_SONG_TITLE, song.title)
-                        putExtra(MusicForegroundService.EXTRA_SONG_ARTIST, song.artistName)
-                        putExtra(MusicForegroundService.EXTRA_AAFP, song.albumArtFilePath)
-                        putExtra(MusicForegroundService.EXTRA_IS_SONG_PLAYING, state.isPlaying)
-                        putExtra(MusicForegroundService.EXTRA_CURRENT_POSITION_MS, state.currentPositionMs.toLong())
-                        putExtra(MusicForegroundService.EXTRA_DURATION_MS, state.durationMs.toLong())
+                        putExtra(MusicForegroundService.Extras.EXTRA_SONG_TITLE, song.title)
+                        putExtra(MusicForegroundService.Extras.EXTRA_SONG_ARTIST, song.artistName)
+                        putExtra(MusicForegroundService.Extras.EXTRA_AAFP, song.albumArtFilePath)
+                        putExtra(MusicForegroundService.Extras.EXTRA_IS_SONG_PLAYING, state.isPlaying)
+                        putExtra(MusicForegroundService.Extras.EXTRA_CURRENT_POSITION_MS, state.currentPositionMs.toLong())
+                        putExtra(MusicForegroundService.Extras.EXTRA_DURATION_MS, state.durationMs.toLong())
                     }
                     ContextCompat.startForegroundService(getApplication(), intent)
             }
         }
 
         val intentFilter = IntentFilter().apply {
-            addAction(MusicForegroundService.ACTION_PAUSE_PLAY_SONG)
-            addAction(MusicForegroundService.ACTION_NEXT_SONG)
-            addAction(MusicForegroundService.ACTION_PREVIOUS_SONG)
-            addAction(MusicForegroundService.ACTION_SEEK_TO)
+            addAction(MusicForegroundService.Actions.ACTION_PAUSE_PLAY_SONG)
+            addAction(MusicForegroundService.Actions.ACTION_NEXT_SONG)
+            addAction(MusicForegroundService.Actions.ACTION_PREVIOUS_SONG)
+            addAction(MusicForegroundService.Actions.ACTION_SEEK_TO)
         }
         ContextCompat.registerReceiver(
             getApplication(),

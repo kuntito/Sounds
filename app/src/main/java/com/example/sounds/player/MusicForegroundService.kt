@@ -97,17 +97,17 @@ class MusicForegroundService: Service() {
             .addAction(
                 android.R.drawable.ic_media_previous,
                 "Previous",
-                getActionIntent(ACTION_PREVIOUS_SONG),
+                getActionIntent(Actions.ACTION_PREVIOUS_SONG),
             )
             .addAction(
                 playPauseIcon,
                 "Play/Pause",
-                getActionIntent(ACTION_PAUSE_PLAY_SONG)
+                getActionIntent(Actions.ACTION_PAUSE_PLAY_SONG)
             )
             .addAction(
                 android.R.drawable.ic_media_next,
                 "Next",
-                getActionIntent(ACTION_NEXT_SONG),
+                getActionIntent(Actions.ACTION_NEXT_SONG),
             )
             .build()
     }
@@ -120,24 +120,24 @@ class MusicForegroundService: Service() {
             isActive = true
             setCallback(object : MediaSessionCompat.Callback() {
                 override fun onPlay() {
-                    sendBroadcast(Intent(ACTION_PAUSE_PLAY_SONG))
+                    sendBroadcast(Intent(Actions.ACTION_PAUSE_PLAY_SONG))
                 }
                 override fun onPause() {
-                    sendBroadcast(Intent(ACTION_PAUSE_PLAY_SONG))
+                    sendBroadcast(Intent(Actions.ACTION_PAUSE_PLAY_SONG))
                 }
 
                 override fun onSkipToNext() {
-                    sendBroadcast(Intent(ACTION_NEXT_SONG))
+                    sendBroadcast(Intent(Actions.ACTION_NEXT_SONG))
                 }
 
                 override fun onSkipToPrevious() {
-                    sendBroadcast(Intent(ACTION_PREVIOUS_SONG))
+                    sendBroadcast(Intent(Actions.ACTION_PREVIOUS_SONG))
                 }
 
                 override fun onSeekTo(pos: Long) {
                     sendBroadcast(
-                        Intent(ACTION_SEEK_TO)
-                            .putExtra(EXTRA_SEEK_POSITION, pos)
+                        Intent(Actions.ACTION_SEEK_TO)
+                            .putExtra(Extras.EXTRA_SEEK_POSITION, pos)
                     )
                 }
             })
@@ -148,15 +148,15 @@ class MusicForegroundService: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_PLAYER_STATE_UPDATE -> {
-                val songTitle = intent.getStringExtra(EXTRA_SONG_TITLE) ?: "Unknown"
-                val songArtist = intent.getStringExtra(EXTRA_SONG_ARTIST) ?: "Unknown"
-                val albumArtFilePath = intent.getStringExtra(EXTRA_AAFP) ?: "Unknown"
+            Actions.ACTION_PLAYER_STATE_UPDATE -> {
+                val songTitle = intent.getStringExtra(Extras.EXTRA_SONG_TITLE) ?: "Unknown"
+                val songArtist = intent.getStringExtra(Extras.EXTRA_SONG_ARTIST) ?: "Unknown"
+                val albumArtFilePath = intent.getStringExtra(Extras.EXTRA_AAFP) ?: "Unknown"
                 val isPlayingSong = intent.getBooleanExtra(
-                    EXTRA_IS_SONG_PLAYING, false
+                    Extras.EXTRA_IS_SONG_PLAYING, false
                 )
-                val currentPositionMs = intent.getLongExtra(EXTRA_CURRENT_POSITION_MS, 0L)
-                val durationMs = intent.getLongExtra(EXTRA_DURATION_MS, 0L)
+                val currentPositionMs = intent.getLongExtra(Extras.EXTRA_CURRENT_POSITION_MS, 0L)
+                val durationMs = intent.getLongExtra(Extras.EXTRA_DURATION_MS, 0L)
 
 
                 val musicPlayerNotification = buildMusicPlayerNotification(
@@ -206,14 +206,14 @@ class MusicForegroundService: Service() {
         return START_STICKY
     }
 
-    // TODO separate actions and extras
-    companion object {
+    object Actions {
         const val ACTION_PAUSE_PLAY_SONG = "ACTION_PLAY_PAUSE_SONG"
         const val ACTION_PREVIOUS_SONG = "ACTION_PREVIOUS_SONG"
         const val ACTION_NEXT_SONG = "ACTION_NEXT_SONG"
         const val ACTION_PLAYER_STATE_UPDATE = "ACTION_PLAYER_STATE_UPDATE"
         const val ACTION_SEEK_TO = "ACTION_SEEK_TO"
-
+    }
+    object Extras {
         const val EXTRA_SONG_TITLE = "SONG_TITLE"
         const val EXTRA_SONG_ARTIST = "SONG_ARTIST"
         const val EXTRA_AAFP = "AAFP"
@@ -221,6 +221,5 @@ class MusicForegroundService: Service() {
         const val EXTRA_CURRENT_POSITION_MS = "CURRENT_POSITION_MS"
         const val EXTRA_DURATION_MS = "DURATION_MS"
         const val EXTRA_SEEK_POSITION = "EXTRA_SEEK_POSITION"
-
     }
 }
