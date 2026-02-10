@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 
@@ -91,13 +90,23 @@ class MusicForegroundService: Service() {
             .setStyle(
                 MediaStyle()
                     .setMediaSession(mediaSessionCompat.sessionToken)
-                    .setShowActionsInCompactView(0)
+                    .setShowActionsInCompactView(0, 1, 2)
             )
             .setLargeIcon(BitmapFactory.decodeFile(albumArtFilePath))
+            .addAction(
+                android.R.drawable.ic_media_previous,
+                "Previous",
+                getActionIntent(ACTION_PREVIOUS_SONG),
+            )
             .addAction(
                 playPauseIcon,
                 "Play/Pause",
                 getActionIntent(ACTION_PAUSE_PLAY_SONG)
+            )
+            .addAction(
+                android.R.drawable.ic_media_next,
+                "Next",
+                getActionIntent(ACTION_NEXT_SONG),
             )
             .build()
     }
@@ -114,6 +123,14 @@ class MusicForegroundService: Service() {
                 }
                 override fun onPause() {
                     sendBroadcast(Intent(ACTION_PAUSE_PLAY_SONG))
+                }
+
+                override fun onSkipToNext() {
+                    sendBroadcast(Intent(ACTION_NEXT_SONG))
+                }
+
+                override fun onSkipToPrevious() {
+                    sendBroadcast(Intent(ACTION_PREVIOUS_SONG))
                 }
             })
         }
@@ -156,6 +173,8 @@ class MusicForegroundService: Service() {
                         .setState(playbackState, 0L, 1f)
                         .setActions(
                             PlaybackStateCompat.ACTION_PLAY_PAUSE
+                             or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                             or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
                         )
                         .build()
                 )
@@ -166,8 +185,10 @@ class MusicForegroundService: Service() {
     }
 
     companion object {
-        const val ACTION_PAUSE_PLAY_SONG = "PLAY_PAUSE_SONG"
-        const val ACTION_PLAYER_STATE_UPDATE = "PLAYER_STATE_UPDATE"
+        const val ACTION_PAUSE_PLAY_SONG = "ACTION_PLAY_PAUSE_SONG"
+        const val ACTION_PREVIOUS_SONG = "ACTION_PREVIOUS_SONG"
+        const val ACTION_NEXT_SONG = "ACTION_NEXT_SONG"
+        const val ACTION_PLAYER_STATE_UPDATE = "ACTION_PLAYER_STATE_UPDATE"
 
         const val EXTRA_SONG_TITLE = "SONG_TITLE"
         const val EXTRA_SONG_ARTIST = "SONG_ARTIST"

@@ -44,14 +44,19 @@ class SongViewModel(
             initialValue = emptyList(),
         )
 
-
-    private val playPauseReceiver = object: BroadcastReceiver() {
+    private val playerNotificationBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
-            if (playerState.value.isPlaying) {
-                pauseSong()
-            }
-            else {
-                playerState.value.loadedSong?.let { playSong(it) }
+            when (p1?.action) {
+                MusicForegroundService.ACTION_PAUSE_PLAY_SONG -> {
+                    if (playerState.value.isPlaying) {
+                        pauseSong()
+                    } else {
+                        playerState.value.loadedSong?.let { playSong(it) }
+                    }
+                }
+
+                MusicForegroundService.ACTION_NEXT_SONG -> onNextSong()
+                MusicForegroundService.ACTION_PREVIOUS_SONG -> onPreviousSong()
             }
         }
     }
@@ -85,10 +90,14 @@ class SongViewModel(
             }
         }
 
-        val intentFilter = IntentFilter(MusicForegroundService.ACTION_PAUSE_PLAY_SONG)
+        val intentFilter = IntentFilter().apply {
+            addAction(MusicForegroundService.ACTION_PAUSE_PLAY_SONG)
+            addAction(MusicForegroundService.ACTION_NEXT_SONG)
+            addAction(MusicForegroundService.ACTION_PREVIOUS_SONG)
+        }
         ContextCompat.registerReceiver(
             getApplication(),
-            playPauseReceiver,
+            playerNotificationBroadcastReceiver,
             intentFilter,
             ContextCompat.RECEIVER_NOT_EXPORTED,
         )
@@ -144,6 +153,6 @@ class SongViewModel(
     override fun onCleared() {
         super.onCleared()
         songPlayer.release()
-        getApplication<Application>().unregisterReceiver(playPauseReceiver)
+        getApplication<Application>().unregisterReceiver(playerNotificationBroadcastReceiver)
     }
 }
