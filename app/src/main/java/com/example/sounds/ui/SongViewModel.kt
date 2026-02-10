@@ -57,6 +57,15 @@ class SongViewModel(
 
                 MusicForegroundService.ACTION_NEXT_SONG -> onNextSong()
                 MusicForegroundService.ACTION_PREVIOUS_SONG -> onPreviousSong()
+                MusicForegroundService.ACTION_SEEK_TO -> {
+                    val pos = p1.getLongExtra(
+                        MusicForegroundService.EXTRA_SEEK_POSITION,
+                        0L
+                    )
+                    val durationMs = playerState.value.durationMs
+                    val progress = pos.toFloat() / durationMs.toFloat()
+                    songPlayer.seekTo(progress)
+                }
             }
         }
     }
@@ -71,7 +80,9 @@ class SongViewModel(
 
         viewModelScope.launch {
             playerState
-                .distinctUntilChangedBy { Pair(it.loadedSong, it.isPlaying) }
+                .distinctUntilChangedBy {
+                    Triple(it.loadedSong, it.isPlaying, it.currentPositionMs)
+                }
                 .collect { state ->
                     val song = state.loadedSong ?: return@collect
 
@@ -85,6 +96,8 @@ class SongViewModel(
                         putExtra(MusicForegroundService.EXTRA_SONG_ARTIST, song.artistName)
                         putExtra(MusicForegroundService.EXTRA_AAFP, song.albumArtFilePath)
                         putExtra(MusicForegroundService.EXTRA_IS_SONG_PLAYING, state.isPlaying)
+                        putExtra(MusicForegroundService.EXTRA_CURRENT_POSITION_MS, state.currentPositionMs.toLong())
+                        putExtra(MusicForegroundService.EXTRA_DURATION_MS, state.durationMs.toLong())
                     }
                     ContextCompat.startForegroundService(getApplication(), intent)
             }
@@ -94,6 +107,7 @@ class SongViewModel(
             addAction(MusicForegroundService.ACTION_PAUSE_PLAY_SONG)
             addAction(MusicForegroundService.ACTION_NEXT_SONG)
             addAction(MusicForegroundService.ACTION_PREVIOUS_SONG)
+            addAction(MusicForegroundService.ACTION_SEEK_TO)
         }
         ContextCompat.registerReceiver(
             getApplication(),

@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
@@ -132,6 +133,13 @@ class MusicForegroundService: Service() {
                 override fun onSkipToPrevious() {
                     sendBroadcast(Intent(ACTION_PREVIOUS_SONG))
                 }
+
+                override fun onSeekTo(pos: Long) {
+                    sendBroadcast(
+                        Intent(ACTION_SEEK_TO)
+                            .putExtra(EXTRA_SEEK_POSITION, pos)
+                    )
+                }
             })
         }
     }
@@ -147,6 +155,9 @@ class MusicForegroundService: Service() {
                 val isPlayingSong = intent.getBooleanExtra(
                     EXTRA_IS_SONG_PLAYING, false
                 )
+                val currentPositionMs = intent.getLongExtra(EXTRA_CURRENT_POSITION_MS, 0L)
+                val durationMs = intent.getLongExtra(EXTRA_DURATION_MS, 0L)
+
 
                 val musicPlayerNotification = buildMusicPlayerNotification(
                     isPlayingSong,
@@ -170,12 +181,23 @@ class MusicForegroundService: Service() {
                 // this brings the notification in front of other music player notifications
                 mediaSessionCompat.setPlaybackState(
                     PlaybackStateCompat.Builder()
-                        .setState(playbackState, 0L, 1f)
+                        .setState(
+                            playbackState,
+                            currentPositionMs,
+                            if (isPlayingSong) 1f else 0f
+                        )
                         .setActions(
                             PlaybackStateCompat.ACTION_PLAY_PAUSE
                              or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
                              or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                             or PlaybackStateCompat.ACTION_SEEK_TO
                         )
+                        .build()
+                )
+
+                mediaSessionCompat.setMetadata(
+                    MediaMetadataCompat.Builder()
+                        .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, durationMs)
                         .build()
                 )
             }
@@ -184,16 +206,21 @@ class MusicForegroundService: Service() {
         return START_STICKY
     }
 
+    // TODO separate actions and extras
     companion object {
         const val ACTION_PAUSE_PLAY_SONG = "ACTION_PLAY_PAUSE_SONG"
         const val ACTION_PREVIOUS_SONG = "ACTION_PREVIOUS_SONG"
         const val ACTION_NEXT_SONG = "ACTION_NEXT_SONG"
         const val ACTION_PLAYER_STATE_UPDATE = "ACTION_PLAYER_STATE_UPDATE"
+        const val ACTION_SEEK_TO = "ACTION_SEEK_TO"
 
         const val EXTRA_SONG_TITLE = "SONG_TITLE"
         const val EXTRA_SONG_ARTIST = "SONG_ARTIST"
         const val EXTRA_AAFP = "AAFP"
         const val EXTRA_IS_SONG_PLAYING = "IS_PLAYING_SONG"
+        const val EXTRA_CURRENT_POSITION_MS = "CURRENT_POSITION_MS"
+        const val EXTRA_DURATION_MS = "DURATION_MS"
+        const val EXTRA_SEEK_POSITION = "EXTRA_SEEK_POSITION"
 
     }
 }
