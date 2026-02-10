@@ -14,6 +14,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
+import com.example.sounds.MainActivity
 
 // a foreground service is work the app is doing that you want to show in the notifications pane
 // every notification has a channel, think, a container where notifications can pop up
@@ -94,6 +95,16 @@ class MusicForegroundService: Service() {
                     .setShowActionsInCompactView(0, 1, 2)
             )
             .setLargeIcon(BitmapFactory.decodeFile(albumArtFilePath))
+            .setContentIntent(
+                PendingIntent.getActivity(
+                    this,
+                    0,
+                    Intent(this, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    },
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            )
             .addAction(
                 android.R.drawable.ic_media_previous,
                 "Previous",
