@@ -25,7 +25,7 @@ class SongViewModel(
     application: Application,
     private val repository: SoundsRepository,
 ): AndroidViewModel(application) {
-    private val songPlayer = SongPlayer(viewModelScope)
+    private val songPlayer = SongPlayer(viewModelScope, application)
     val playerState = songPlayer.playerState
     private val queueManager = QueueManager(viewModelScope)
     val songQueue = queueManager.queueOfSongs
