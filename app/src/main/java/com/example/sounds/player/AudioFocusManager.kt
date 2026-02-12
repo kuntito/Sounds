@@ -25,12 +25,15 @@ class AudioFocusManager(context: Context) {
     private var audioFocusRequest: AudioFocusRequest? = null
     private var onFocusChange: ((Int) -> Unit)? = null
 
+    var hasFocus: Boolean = false
+        private set
+
     fun setOnAudioFocusChangeListener(listener: (Int) -> Unit) {
         onFocusChange = listener
     }
 
     fun requestFocus(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val focusGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val request = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
                 .setAudioAttributes(
                     AudioAttributes.Builder()
@@ -51,6 +54,9 @@ class AudioFocusManager(context: Context) {
                 AudioManager.AUDIOFOCUS_GAIN
             ) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
         }
+
+        hasFocus = focusGranted
+        return focusGranted
     }
 
     fun releaseFocus() {

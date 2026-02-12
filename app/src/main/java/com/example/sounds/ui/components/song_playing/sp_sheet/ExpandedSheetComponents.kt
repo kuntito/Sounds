@@ -29,6 +29,11 @@ fun ExpandedSheetComponents(
     onNext: () -> Unit,
     onPrev: () -> Unit,
     isSwipingToAnotherSong: Boolean = false,
+    isShuffled: Boolean,
+    toggleShuffle: () -> Unit,
+    currentTrackNumber: Int,
+    totalTracks: Int,
+    spaceFromBottom: Int = 0,
 ) {
     currentSong?.let { currentSong ->
         val alpha by animateFloatAsState(
@@ -58,7 +63,15 @@ fun ExpandedSheetComponents(
                 onSeekTo = onSeekTo,
                 onNext = onNext,
                 onPrev = onPrev,
+                isShuffled = isShuffled,
+                toggleShuffle = toggleShuffle,
             )
+            Spacer(modifier = Modifier.weight(1f))
+            TrackPositionInQueue(
+                currentTrackNumber = currentTrackNumber,
+                totalTracks = totalTracks,
+            )
+            Spacer(modifier = Modifier.height(spaceFromBottom.dp))
         }
     }
 }
@@ -78,6 +91,10 @@ private fun ExpandedSheetComponentsPreview() {
             onSeekTo = {},
             onNext = {},
             onPrev = {},
+            isShuffled = false,
+            toggleShuffle = {},
+            currentTrackNumber = 3,
+            totalTracks = 12
         )
     }
 }

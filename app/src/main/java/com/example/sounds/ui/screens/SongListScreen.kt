@@ -27,6 +27,9 @@ fun SongPlayingScreen(
     currentSong: Song?,
     songQueue: List<Song>,
     onSwapSong: (Int, Int) -> Unit,
+    isShuffled: Boolean,
+    toggleShuffle: () -> Unit,
+    currentTrackNumber: Int,
     prevSongAAFP: String?,
     nextSongAAFP: String?,
     modifier: Modifier = Modifier,
@@ -60,10 +63,13 @@ fun SongPlayingScreen(
                 onPrev = onPrev,
                 songQueue = songQueue,
                 onSwapSong = onSwapSong,
+                isShuffled = isShuffled,
+                toggleShuffle = toggleShuffle,
                 currentSong = currentSong,
                 prevSongAAFP = prevSongAAFP,
                 nextSongAAFP = nextSongAAFP,
                 onSongItemClick = onSongItemClick,
+                currentTrackNumber = currentTrackNumber,
             )
         }
     }
@@ -85,9 +91,12 @@ private fun SongPlayingScreenPreview() {
             onNext = {},
             onPrev = {},
             songQueue = dummySongList,
+            isShuffled = false,
+            toggleShuffle = {},
             currentSong = null,
             prevSongAAFP = null,
             nextSongAAFP = null,
+            currentTrackNumber = 3,
             onSwapSong = { _, _ -> }
         )
     }

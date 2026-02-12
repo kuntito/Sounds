@@ -21,6 +21,8 @@ fun ControlSectionSongPlay(
     onSeekTo: (Float) -> Unit,
     onNext: () -> Unit,
     onPrev: () -> Unit,
+    isShuffled: Boolean,
+    toggleShuffle: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,6 +45,8 @@ fun ControlSectionSongPlay(
             onPause = onPause,
             onNext = onNext,
             onPrev = onPrev,
+            isShuffled = isShuffled,
+            toggleShuffle = toggleShuffle,
         )
     }
 }
@@ -60,6 +64,8 @@ private fun ControlSectionSongPlayPreview() {
             onSeekTo = {},
             onPrev = {},
             onNext = {},
+            isShuffled = false,
+            toggleShuffle = {}
         )
     }
 }

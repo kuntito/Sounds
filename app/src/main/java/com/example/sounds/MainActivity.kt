@@ -1,5 +1,6 @@
 package com.example.sounds
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +12,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.sounds.data.SoundsRepository
 import com.example.sounds.data.local.SoundsDb
 import com.example.sounds.data.remote.SoundsApiClient
@@ -19,6 +23,10 @@ import com.example.sounds.ui.SongViewModelFactory
 import com.example.sounds.ui.screens.SongPlayingScreen
 import com.example.sounds.ui.theme.SoundsTheme
 
+const val soundsDebugTag = "sounds_tag"
+val Context.prefDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "settings",
+)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +42,7 @@ class MainActivity : ComponentActivity() {
         val songViewModel: SongViewModel by viewModels {
             SongViewModelFactory(
                 application,
-                repository
+                repository,
             )
         }
 
@@ -46,6 +54,8 @@ class MainActivity : ComponentActivity() {
             val currentSong by songViewModel.currentSong.collectAsState()
             val previousSong by songViewModel.previousSong.collectAsState()
             val nextSong by songViewModel.nextSong.collectAsState()
+            val isShuffled by songViewModel.isShuffled.collectAsState()
+            val currentTrackNumber by songViewModel.currentTrackNumber.collectAsState()
 
             SoundsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -59,10 +69,13 @@ class MainActivity : ComponentActivity() {
                         onNext = songViewModel::onNextSong,
                         onPrev = songViewModel::onPreviousSong,
                         songQueue = songQueue,
+                        isShuffled = isShuffled,
+                        toggleShuffle = songViewModel::toggleShuffle,
                         currentSong = currentSong,
                         onSwapSong = songViewModel::onSwapSong,
                         prevSongAAFP = previousSong?.albumArtFilePath,
                         nextSongAAFP = nextSong?.albumArtFilePath,
+                        currentTrackNumber = currentTrackNumber,
                         modifier = Modifier
                             .padding(innerPadding),
                     )

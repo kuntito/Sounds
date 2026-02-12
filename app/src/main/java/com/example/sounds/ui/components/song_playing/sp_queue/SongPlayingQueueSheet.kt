@@ -32,17 +32,17 @@ import com.example.sounds.ui.theme.colorKDB
 @Composable
 fun SongPlayingQueueSheet(
     modifier: Modifier = Modifier,
+    sheetCollapsedHeight: Int,
     playerState: PlayerState,
     currentSong: Song?,
     songQueue: List<Song>,
     onSwapSong: (Int, Int) -> Unit,
     onSongItemClick: (Int, List<Song>) -> Unit,
 ) {
-    val minHeight = 48
     val screenHeight = LocalConfiguration.current.screenHeightDp
 
     val sheetState = rememberSheetState(
-        minHeight = minHeight,
+        minHeight = sheetCollapsedHeight,
         maxHeight = screenHeight
     )
 
@@ -56,7 +56,7 @@ fun SongPlayingQueueSheet(
     var isHandlerTouched by remember { mutableStateOf(false) }
 
     SheetContainer(
-        collapsedHeight = minHeight,
+        collapsedHeight = sheetCollapsedHeight,
         maxHeight = screenHeight,
         sheetState = sheetState,
         modifier = modifier
@@ -82,7 +82,7 @@ fun SongPlayingQueueSheet(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .height(minHeight.dp)
+                    .height(sheetCollapsedHeight.dp)
                     .fillMaxWidth()
                 ,
             ) {
@@ -118,6 +118,7 @@ private fun SongPlayingQueueSheetPreview() {
     ) {
 
         SongPlayingQueueSheet(
+            sheetCollapsedHeight = 48,
             playerState = PlayerState(
                 isPlaying = true,
             ),

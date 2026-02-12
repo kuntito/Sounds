@@ -74,6 +74,9 @@ fun SongPlayingSheet(
     nextSongAAFP: String?,
     onSwapSong: (Int, Int) -> Unit,
     onSongItemClick: (Int, List<Song>) -> Unit,
+    isShuffled: Boolean,
+    toggleShuffle: () -> Unit,
+    currentTrackNumber: Int,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val sheetState = rememberSheetState(
@@ -82,6 +85,8 @@ fun SongPlayingSheet(
     )
 
     val containerColor = if (sheetState.isCollapsed) colorAguero else colorKDB
+
+    val songPlayingQueueCollapsedHeight = 48
     currentSong?.let { currentSong ->
         BackHandler(enabled = sheetState.isExpanded) {
             sheetState.collapse()
@@ -169,11 +174,17 @@ fun SongPlayingSheet(
                         onNext = onNext,
                         isSwipingToAnotherSong = isSwipingToAnotherSong,
                         currentSong = currentSong,
+                        isShuffled = isShuffled,
+                        toggleShuffle = toggleShuffle,
+                        currentTrackNumber = currentTrackNumber,
+                        totalTracks = songQueue.size,
+                        spaceFromBottom = songPlayingQueueCollapsedHeight,
                     )
                 }
             }
             if (sheetState.isExpanded) {
                 SongPlayingQueueSheet(
+                    sheetCollapsedHeight = songPlayingQueueCollapsedHeight,
                     playerState = playerState,
                     songQueue = songQueue,
                     onSwapSong = onSwapSong,
@@ -210,6 +221,9 @@ private fun SongPlayingSheetPreview() {
             prevSongAAFP = null,
             nextSongAAFP = null,
             onSongItemClick = { _, _ -> },
+            isShuffled = false,
+            toggleShuffle = {},
+            currentTrackNumber = 3,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
         )

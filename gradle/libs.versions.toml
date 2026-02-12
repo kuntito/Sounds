@@ -8,6 +8,7 @@ coil = "2.6.0"
 reorderable = "3.0.0"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
+datastore = "1.1.1"
 media = "1.7.0"
 moshi = "1.15.1"
 junit = "4.13.2"
@@ -46,6 +47,9 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 
 # drag and drop reordering
 reorderable = { group = "sh.calvin.reorderable", name = "reorderable", version.ref = "reorderable" }
+
+# datastore
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 # media session
 androidx-media = { group = "androidx.media", name = "media", version.ref = "media" }

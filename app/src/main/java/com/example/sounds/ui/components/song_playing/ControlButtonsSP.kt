@@ -19,6 +19,8 @@ fun ControlButtonsSongPlay(
     onPause: () -> Unit,
     onNext: () -> Unit,
     onPrev: () -> Unit,
+    isShuffled: Boolean,
+    toggleShuffle: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -27,7 +29,10 @@ fun ControlButtonsSongPlay(
         ,
     ) {
 
-        ShuffleBtn()
+        ShuffleBtn(
+            isShuffled = isShuffled,
+            toggleShuffle = toggleShuffle,
+        )
         PrevPlayPauseNextBtns(
             playerState = playerState,
             onPlay = onPlay,
@@ -52,6 +57,8 @@ private fun ControlButtonsSongPlayPreview() {
             onPause = {},
             onNext = {},
             onPrev = {},
+            isShuffled = false,
+            toggleShuffle = {},
         )
     }
 }

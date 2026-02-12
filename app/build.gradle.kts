@@ -66,6 +66,9 @@ dependencies {
     // drag and drop reordering
     implementation(libs.reorderable)
 
+    // datastore
+    implementation(libs.androidx.datastore.preferences)
+
     // media session
     implementation(libs.androidx.media)
 

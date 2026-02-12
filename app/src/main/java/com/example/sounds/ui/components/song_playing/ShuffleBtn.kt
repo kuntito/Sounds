@@ -1,6 +1,5 @@
 package com.example.sounds.ui.components.song_playing
 
-import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,30 +11,20 @@ import com.example.sounds.R
 import com.example.sounds.ui.components.utils.AppIconButton
 import com.example.sounds.ui.components.utils.PreviewColumn
 
-enum class ShuffleBtnState(
-    @get:DrawableRes val iconRes: Int,
-) {
-    NoShuffle(R.drawable.ic_shuffle_off),
-    ShuffleOn(R.drawable.ic_shuffle_on)
-}
-
 @Composable
 fun ShuffleBtn(
     modifier: Modifier = Modifier,
+    isShuffled: Boolean,
+    toggleShuffle: () -> Unit,
 ) {
-    var state by remember { mutableStateOf(ShuffleBtnState.NoShuffle) }
-    val toggleState = {
-        state = when(state) {
-            ShuffleBtnState.NoShuffle -> ShuffleBtnState.ShuffleOn
-            ShuffleBtnState.ShuffleOn -> ShuffleBtnState.NoShuffle
-        }
-    }
+
+    val iconRes  = if (isShuffled) R.drawable.ic_shuffle_on else R.drawable.ic_shuffle_off
 
     AppIconButton(
-        iconRes = state.iconRes,
+        iconRes = iconRes,
         modifier = modifier,
     ) {
-        toggleState()
+        toggleShuffle()
     }
 }
 
@@ -43,6 +32,13 @@ fun ShuffleBtn(
 @Composable
 private fun ShuffleBtnPreview() {
     PreviewColumn() {
-        ShuffleBtn()
+        var isShuffled by remember { mutableStateOf(false) }
+        val toggleShuffle = {
+            isShuffled = !isShuffled
+        }
+        ShuffleBtn(
+            isShuffled = isShuffled,
+            toggleShuffle = toggleShuffle
+        )
     }
 }

@@ -3,7 +3,9 @@ package com.example.sounds.player
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.util.Log
 import com.example.sounds.data.models.Song
+import com.example.sounds.soundsDebugTag
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -41,6 +43,7 @@ class SongPlayer(
     private val _onPlaybackComplete = MutableSharedFlow<Unit>()
     val onPlaybackComplete = _onPlaybackComplete.asSharedFlow()
 
+    private var playSongJob: Job? = null
     private var positionUpdateJob: Job? = null
 
     private var wasPlayingBeforeFocusLoss = false
@@ -66,7 +69,8 @@ class SongPlayer(
         song: Song,
         filePath: String
     ) {
-        scope.launch(Dispatchers.IO) {
+        playSongJob?.cancel()
+        playSongJob = scope.launch(Dispatchers.IO) {
             try {
 
                 val isNewSong = _playerState.value.loadedSong?.id != song.id
@@ -94,7 +98,13 @@ class SongPlayer(
     }
 
     private fun startPlayer() {
-        if (!audioFocusManager.requestFocus()) return
+        if (!audioFocusManager.hasFocus){
+            val focus = audioFocusManager.requestFocus()
+            if (!focus) {
+                Log.d(soundsDebugTag, "focus wasn't granted, player would not start")
+                return
+            }
+        }
         mediaPlayer?.start()
     }
 
@@ -125,14 +135,14 @@ class SongPlayer(
         }
     }
 
-    private fun initializePlayer() {
+    private fun initializePlayerIfInactive() {
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer()
         }
     }
 
     private fun startPlayback(filePath: String) {
-        initializePlayer()
+        initializePlayerIfInactive()
 
         mediaPlayer?.apply {
             reset()

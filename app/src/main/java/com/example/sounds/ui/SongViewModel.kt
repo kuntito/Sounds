@@ -14,6 +14,8 @@ import com.example.sounds.data.models.toSong
 import com.example.sounds.player.MusicForegroundService
 import com.example.sounds.player.QueueManager
 import com.example.sounds.player.SongPlayer
+import com.example.sounds.prefDataStore
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -25,14 +27,21 @@ class SongViewModel(
     application: Application,
     private val repository: SoundsRepository,
 ): AndroidViewModel(application) {
+
+    private var playSongJob: Job? = null
     private val songPlayer = SongPlayer(viewModelScope, application)
     val playerState = songPlayer.playerState
-    private val queueManager = QueueManager(viewModelScope)
+    private val queueManager = QueueManager(
+        viewModelScope,
+        getApplication<Application>().prefDataStore
+    )
     val songQueue = queueManager.queueOfSongs
 
     val currentSong = queueManager.currentSong
     val previousSong = queueManager.previousSong
     val nextSong = queueManager.nextSong
+    val isShuffled = queueManager.isShuffled
+    val currentTrackNumber = queueManager.currentTrackNumber
 
 
     val songs: StateFlow<List<Song>> = repository.getSongs()
@@ -128,7 +137,8 @@ class SongViewModel(
     }
 
     fun playSong(song: Song) {
-        viewModelScope.launch {
+        playSongJob?.cancel()
+        playSongJob = viewModelScope.launch {
             val path = repository.getLocalPath(song.id) ?: return@launch
 
             songPlayer.play(
@@ -162,6 +172,10 @@ class SongViewModel(
 
     fun onSwapSong(fromIndex: Int, toIndex: Int) {
         queueManager.swapSongs(fromIndex, toIndex)
+    }
+
+    fun toggleShuffle() {
+        queueManager.toggleShuffle()
     }
 
     override fun onCleared() {
