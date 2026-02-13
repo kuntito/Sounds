@@ -12,6 +12,7 @@ import com.example.sounds.data.SoundsRepository
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.toSong
 import com.example.sounds.player.MusicForegroundService
+import com.example.sounds.player.PlaybackActions
 import com.example.sounds.player.QueueManager
 import com.example.sounds.player.SongPlayer
 import com.example.sounds.prefDataStore
@@ -177,6 +178,17 @@ class SongViewModel(
     fun toggleShuffle() {
         queueManager.toggleShuffle()
     }
+
+    val playbackActions = PlaybackActions(
+        onPlay = ::playSong,
+        onPause = ::pauseSong,
+        onSeekTo = ::seekSongTo,
+        onNext = ::onNextSong,
+        onPrev = ::onPreviousSong,
+        toggleShuffle = ::toggleShuffle,
+        onSwapSong = ::onSwapSong,
+        onSongItemClick = ::onSongItemClick,
+    )
 
     override fun onCleared() {
         super.onCleared()

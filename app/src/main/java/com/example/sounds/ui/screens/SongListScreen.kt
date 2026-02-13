@@ -9,7 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySongList
+import com.example.sounds.player.PlaybackActions
 import com.example.sounds.player.PlayerState
+import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.song_list.SongList
 import com.example.sounds.ui.components.song_playing.sp_sheet.SongPlayingSheet
 import com.example.sounds.ui.components.utils.PreviewColumn
@@ -18,17 +20,10 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 fun SongPlayingScreen(
     songs: List<Song>,
     playerState: PlayerState,
-    playSong: (Song) -> Unit,
-    onSongItemClick: (Int, List<Song>) -> Unit,
-    onPause: () -> Unit,
-    onSeekTo: (Float) -> Unit,
-    onNext: () -> Unit,
-    onPrev: () -> Unit,
+    playbackActions: PlaybackActions,
     currentSong: Song?,
     songQueue: List<Song>,
-    onSwapSong: (Int, Int) -> Unit,
     isShuffled: Boolean,
-    toggleShuffle: () -> Unit,
     currentTrackNumber: Int,
     prevSongAAFP: String?,
     nextSongAAFP: String?,
@@ -45,7 +40,7 @@ fun SongPlayingScreen(
             topEdgePadding = 16f,
             bottomEdgePadding = miniPlayerHeight * 1.2f,
             playerState = playerState,
-            onSongItemClick = onSongItemClick,
+            onSongItemClick = playbackActions.onSongItemClick,
             currentSong = currentSong,
         )
         AnimatedVisibility(
@@ -56,19 +51,12 @@ fun SongPlayingScreen(
             SongPlayingSheet(
                 miniPlayerHeight = miniPlayerHeight,
                 playerState = playerState,
-                onPlay = playSong,
-                onPause = onPause,
-                onSeekTo = onSeekTo,
-                onNext = onNext,
-                onPrev = onPrev,
+                playbackActions = playbackActions,
                 songQueue = songQueue,
-                onSwapSong = onSwapSong,
                 isShuffled = isShuffled,
-                toggleShuffle = toggleShuffle,
                 currentSong = currentSong,
                 prevSongAAFP = prevSongAAFP,
                 nextSongAAFP = nextSongAAFP,
-                onSongItemClick = onSongItemClick,
                 currentTrackNumber = currentTrackNumber,
             )
         }
@@ -84,20 +72,13 @@ private fun SongPlayingScreenPreview() {
         SongPlayingScreen(
             songs = dummySongList,
             playerState = PlayerState(),
-            playSong = {},
-            onSongItemClick = { _, _ -> },
-            onPause = {},
-            onSeekTo = {},
-            onNext = {},
-            onPrev = {},
+            playbackActions = dummyPlaybackActions,
             songQueue = dummySongList,
             isShuffled = false,
-            toggleShuffle = {},
             currentSong = null,
             prevSongAAFP = null,
             nextSongAAFP = null,
             currentTrackNumber = 3,
-            onSwapSong = { _, _ -> }
         )
     }
 }

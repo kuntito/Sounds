@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySongList
+import com.example.sounds.player.PlaybackActions
 import com.example.sounds.player.PlayerState
+import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.song_playing.DraggableSheetState
 import com.example.sounds.ui.components.song_playing.SheetContainer
 import com.example.sounds.ui.components.song_playing.SwipeableAlbumArt
@@ -63,19 +65,12 @@ fun SongPlayingSheet(
     modifier: Modifier = Modifier,
     miniPlayerHeight: Int,
     playerState: PlayerState,
-    onPlay: (song: Song) -> Unit,
-    onPause: () -> Unit,
-    onSeekTo: (Float) -> Unit,
-    onNext: () -> Unit,
-    onPrev: () -> Unit,
+    playbackActions: PlaybackActions,
     songQueue: List<Song>,
     currentSong: Song?,
     prevSongAAFP: String?,
     nextSongAAFP: String?,
-    onSwapSong: (Int, Int) -> Unit,
-    onSongItemClick: (Int, List<Song>) -> Unit,
     isShuffled: Boolean,
-    toggleShuffle: () -> Unit,
     currentTrackNumber: Int,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -97,7 +92,7 @@ fun SongPlayingSheet(
             contentAlignment = Alignment.BottomCenter,
             modifier = Modifier.fillMaxSize()
         ) {
-            val onPlaySong = { onPlay(currentSong) }
+            val onPlaySong = { playbackActions.onPlay(currentSong) }
             SheetContainer(
                 collapsedHeight = miniPlayerHeight,
                 maxHeight = screenHeight,
@@ -128,8 +123,8 @@ fun SongPlayingSheet(
                         currentAAFP = currentSong.albumArtFilePath,
                         truePrevAAFP = prevSongAAFP,
                         trueNextAAFP = nextSongAAFP,
-                        onSwipeNextSong = onNext,
-                        onSwipePrevSong = onPrev,
+                        onSwipeNextSong = playbackActions.onNext,
+                        onSwipePrevSong = playbackActions.onPrev,
                         isSwipeEnabled = sheetState.isExpanded,
                         maxImageSize = maxImageSize,
                         onSwiping = { isSwipingToAnotherSong = it },
@@ -150,7 +145,7 @@ fun SongPlayingSheet(
                             currentSong = currentSong,
                             isPlaying = playerState.isPlaying,
                             onPlay = onPlaySong,
-                            onPause = onPause,
+                            onPause = playbackActions.onPause,
                             modifier = Modifier
                                 .clickable(
                                     indication = null,
@@ -167,15 +162,11 @@ fun SongPlayingSheet(
                 if (sheetState.isExpanded) {
                     ExpandedSheetComponents(
                         playerState = playerState,
-                        onPlay = onPlaySong,
-                        onPause = onPause,
-                        onSeekTo = onSeekTo,
-                        onPrev = onPrev,
-                        onNext = onNext,
+                        playbackActions = playbackActions,
+                        onPlaySong = onPlaySong,
                         isSwipingToAnotherSong = isSwipingToAnotherSong,
                         currentSong = currentSong,
                         isShuffled = isShuffled,
-                        toggleShuffle = toggleShuffle,
                         currentTrackNumber = currentTrackNumber,
                         totalTracks = songQueue.size,
                         spaceFromBottom = songPlayingQueueCollapsedHeight,
@@ -187,9 +178,9 @@ fun SongPlayingSheet(
                     sheetCollapsedHeight = songPlayingQueueCollapsedHeight,
                     playerState = playerState,
                     songQueue = songQueue,
-                    onSwapSong = onSwapSong,
+                    onSwapSong = playbackActions.onSwapSong,
                     currentSong = currentSong,
-                    onSongItemClick = onSongItemClick
+                    onSongItemClick = playbackActions.onSongItemClick
                 )
             }
         }
@@ -210,19 +201,12 @@ private fun SongPlayingSheetPreview() {
             playerState = PlayerState(
                 isPlaying = true,
             ),
-            onPlay = {},
-            onPause = {},
-            onSeekTo = {},
-            onNext = {},
-            onPrev = {},
+            playbackActions = dummyPlaybackActions,
             songQueue = dummySongList,
             currentSong = currentSong,
-            onSwapSong = { _, _ ->  },
             prevSongAAFP = null,
             nextSongAAFP = null,
-            onSongItemClick = { _, _ -> },
             isShuffled = false,
-            toggleShuffle = {},
             currentTrackNumber = 3,
             modifier = Modifier
                 .align(Alignment.BottomCenter)

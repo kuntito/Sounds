@@ -8,7 +8,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sounds.player.PlaybackActions
 import com.example.sounds.player.PlayerState
+import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
@@ -16,13 +18,9 @@ fun ControlSectionSongPlay(
     modifier: Modifier = Modifier,
     width: Float = 256f,
     playerState: PlayerState,
-    onPlay: () -> Unit,
-    onPause: () -> Unit,
-    onSeekTo: (Float) -> Unit,
-    onNext: () -> Unit,
-    onPrev: () -> Unit,
+    playbackActions: PlaybackActions,
+    onPlaySong: () -> Unit,
     isShuffled: Boolean,
-    toggleShuffle: () -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -32,7 +30,7 @@ fun ControlSectionSongPlay(
         SeekBar(
             width = width * 1.07f, // looks better this way
             progress = playerState.playProgress,
-            onSeekTo = onSeekTo,
+            onSeekTo = playbackActions.onSeekTo,
         )
         Spacer(
             modifier = Modifier
@@ -41,12 +39,9 @@ fun ControlSectionSongPlay(
         ControlButtonsSongPlay(
             width = width,
             playerState = playerState,
-            onPlay = onPlay,
-            onPause = onPause,
-            onNext = onNext,
-            onPrev = onPrev,
+            playbackActions = playbackActions,
+            onPlay = onPlaySong,
             isShuffled = isShuffled,
-            toggleShuffle = toggleShuffle,
         )
     }
 }
@@ -59,13 +54,9 @@ private fun ControlSectionSongPlayPreview() {
             playerState = PlayerState(
                 isPlaying = false,
             ),
-            onPlay = {},
-            onPause = {},
-            onSeekTo = {},
-            onPrev = {},
-            onNext = {},
+            playbackActions = dummyPlaybackActions,
+            onPlaySong = {},
             isShuffled = false,
-            toggleShuffle = {}
         )
     }
 }

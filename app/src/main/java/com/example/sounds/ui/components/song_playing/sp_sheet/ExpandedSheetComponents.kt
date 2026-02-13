@@ -14,7 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySongList
+import com.example.sounds.player.PlaybackActions
 import com.example.sounds.player.PlayerState
+import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.song_playing.ControlSectionSongPlay
 import com.example.sounds.ui.components.utils.PreviewColumn
 
@@ -23,14 +25,10 @@ fun ExpandedSheetComponents(
     modifier: Modifier = Modifier,
     currentSong: Song?,
     playerState: PlayerState,
-    onPlay: () -> Unit,
-    onPause: () -> Unit,
-    onSeekTo: (Float) -> Unit,
-    onNext: () -> Unit,
-    onPrev: () -> Unit,
+    playbackActions: PlaybackActions,
+    onPlaySong: () -> Unit,
     isSwipingToAnotherSong: Boolean = false,
     isShuffled: Boolean,
-    toggleShuffle: () -> Unit,
     currentTrackNumber: Int,
     totalTracks: Int,
     spaceFromBottom: Int = 0,
@@ -58,13 +56,9 @@ fun ExpandedSheetComponents(
             Spacer(modifier = Modifier.height(48.dp))
             ControlSectionSongPlay(
                 playerState = playerState,
-                onPlay = onPlay,
-                onPause = onPause,
-                onSeekTo = onSeekTo,
-                onNext = onNext,
-                onPrev = onPrev,
+                playbackActions = playbackActions,
+                onPlaySong = onPlaySong,
                 isShuffled = isShuffled,
-                toggleShuffle = toggleShuffle,
             )
             Spacer(modifier = Modifier.weight(1f))
             TrackPositionInQueue(
@@ -86,13 +80,9 @@ private fun ExpandedSheetComponentsPreview() {
             playerState = PlayerState(
                 isPlaying = true,
             ),
-            onPlay = {},
-            onPause = {},
-            onSeekTo = {},
-            onNext = {},
-            onPrev = {},
+            playbackActions = dummyPlaybackActions,
+            onPlaySong = {},
             isShuffled = false,
-            toggleShuffle = {},
             currentTrackNumber = 3,
             totalTracks = 12
         )
