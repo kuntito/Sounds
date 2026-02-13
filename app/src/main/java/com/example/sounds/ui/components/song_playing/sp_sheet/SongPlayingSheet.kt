@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.lerp
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySongList
 import com.example.sounds.player.PlaybackActions
+import com.example.sounds.player.PlaybackRepeatModes
 import com.example.sounds.player.PlayerState
 import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.song_playing.DraggableSheetState
@@ -71,6 +72,7 @@ fun SongPlayingSheet(
     prevSongAAFP: String?,
     nextSongAAFP: String?,
     isShuffled: Boolean,
+    playbackRepeatMode: PlaybackRepeatModes,
     currentTrackNumber: Int,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -167,6 +169,7 @@ fun SongPlayingSheet(
                         isSwipingToAnotherSong = isSwipingToAnotherSong,
                         currentSong = currentSong,
                         isShuffled = isShuffled,
+                        playbackRepeatMode = playbackRepeatMode,
                         currentTrackNumber = currentTrackNumber,
                         totalTracks = songQueue.size,
                         spaceFromBottom = songPlayingQueueCollapsedHeight,
@@ -207,6 +210,7 @@ private fun SongPlayingSheetPreview() {
             prevSongAAFP = null,
             nextSongAAFP = null,
             isShuffled = false,
+            playbackRepeatMode = PlaybackRepeatModes.NoRepeat,
             currentTrackNumber = 3,
             modifier = Modifier
                 .align(Alignment.BottomCenter)

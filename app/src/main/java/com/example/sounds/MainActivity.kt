@@ -56,6 +56,7 @@ class MainActivity : ComponentActivity() {
             val nextSong by songViewModel.nextSong.collectAsState()
             val isShuffled by songViewModel.isShuffled.collectAsState()
             val currentTrackNumber by songViewModel.currentTrackNumber.collectAsState()
+            val playbackRepeatMode by songViewModel.playbackRepeatMode.collectAsState()
 
             SoundsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -65,6 +66,7 @@ class MainActivity : ComponentActivity() {
                         playbackActions = songViewModel.playbackActions,
                         songQueue = songQueue,
                         isShuffled = isShuffled,
+                        playbackRepeatMode = playbackRepeatMode,
                         currentSong = currentSong,
                         prevSongAAFP = previousSong?.albumArtFilePath,
                         nextSongAAFP = nextSong?.albumArtFilePath,

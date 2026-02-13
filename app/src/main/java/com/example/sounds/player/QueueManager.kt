@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.sounds.data.models.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +16,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+enum class PlaybackRepeatModes{
+    NoRepeat,
+    RepeatOne,
+    RepeatAll,
+}
 
 class QueueManager(
     private val scope: CoroutineScope,
@@ -28,9 +35,22 @@ class QueueManager(
     private val _isShuffleOn = MutableStateFlow(false)
     val isShuffled: StateFlow<Boolean> = _isShuffleOn.asStateFlow()
 
+    private val _playbackRepeatMode = MutableStateFlow(PlaybackRepeatModes.NoRepeat)
+    val playbackRepeatMode: StateFlow<PlaybackRepeatModes> = _playbackRepeatMode.asStateFlow()
+    private val isRepeatOne
+        get() = _playbackRepeatMode.value == PlaybackRepeatModes.RepeatOne
+    private val isRepeatAll
+        get() = _playbackRepeatMode.value == PlaybackRepeatModes.RepeatAll
+
+
     private val _currentIndex = MutableStateFlow(0)
+    private val currentIndex
+        get() = _currentIndex.value
+    private val isLastSong
+        get() = currentIndex == _queueOfSongs.value.lastIndex
+
     val currentTrackNumber: StateFlow<Int> = _currentIndex
-        .map { it + 1}
+        .map { it + 1 }
         .stateIn(scope, SharingStarted.Eagerly, 1)
 
     val currentSong: StateFlow<Song?> = combine(
@@ -58,6 +78,9 @@ class QueueManager(
         scope.launch {
             val prefs = prefDataStore.data.first()
             _isShuffleOn.value = prefs[IS_SHUFFLE_ON_PREF_KEY] ?: false
+
+            val repeatModeName = prefs[REPEAT_MODE_PREF_KEY] ?: PlaybackRepeatModes.NoRepeat.name
+            _playbackRepeatMode.value = PlaybackRepeatModes.valueOf(repeatModeName)
         }
     }
 
@@ -75,11 +98,40 @@ class QueueManager(
         }
     }
 
-    fun next(): Song? {
-        if (_currentIndex.value + 1 == queueOfSongs.value.size) return null
+    fun next(isUserPressNext: Boolean): Song? {
+        val nextSongIndex = if (isUserPressNext) {
+            getNextSongIndexOnUserPressNext()
+        } else {
+            getNextSongIndexOnSongEnd()
+        }
 
-        _currentIndex.value++
+        if (nextSongIndex == null) return null
+
+        _currentIndex.value = nextSongIndex
+
         return queueOfSongs.value[_currentIndex.value]
+    }
+
+    private fun getNextSongIndexOnSongEnd(): Int? {
+        return if (isRepeatOne) {
+            currentIndex
+        } else if (isRepeatAll && isLastSong) {
+            0
+        } else if (isLastSong) {
+            null
+        } else {
+            currentIndex + 1
+        }
+    }
+
+    private fun getNextSongIndexOnUserPressNext(): Int? {
+        return if (isLastSong && isRepeatAll) {
+            0
+        } else if (isLastSong) {
+            null
+        } else {
+            currentIndex + 1
+        }
     }
 
     fun previous(): Song? {
@@ -97,7 +149,7 @@ class QueueManager(
         updateCurrentIndexAfterSwap(fromIndex, toIndex)
     }
 
-    fun updateCurrentIndexAfterSwap(fromIndex: Int, toIndex: Int) {
+    private fun updateCurrentIndexAfterSwap(fromIndex: Int, toIndex: Int) {
         val isDragFromBeforeToAfterCurrentSong = fromIndex < _currentIndex.value && toIndex >= _currentIndex.value
         val isDragFromAfterToBeforeCurrentSong = fromIndex > _currentIndex.value && toIndex <= _currentIndex.value
         if (fromIndex == _currentIndex.value) {
@@ -150,7 +202,25 @@ class QueueManager(
         }
     }
 
+    fun toggleRepeatMode() {
+        _playbackRepeatMode.value = when (_playbackRepeatMode.value) {
+            PlaybackRepeatModes.NoRepeat -> PlaybackRepeatModes.RepeatOne
+            PlaybackRepeatModes.RepeatOne -> PlaybackRepeatModes.RepeatAll
+            PlaybackRepeatModes.RepeatAll -> PlaybackRepeatModes.NoRepeat
+        }
+        persistPlaybackRepeatMode(_playbackRepeatMode.value)
+    }
+
+    private fun persistPlaybackRepeatMode(mode: PlaybackRepeatModes) {
+        scope.launch {
+            prefDataStore.edit {
+                it[REPEAT_MODE_PREF_KEY] = mode.name
+            }
+        }
+    }
+
     companion object {
         private val IS_SHUFFLE_ON_PREF_KEY = booleanPreferencesKey("is_shuffle_on")
+        private val REPEAT_MODE_PREF_KEY = stringPreferencesKey("repeat_mode")
     }
 }

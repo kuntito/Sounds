@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sounds.player.PlaybackActions
+import com.example.sounds.player.PlaybackRepeatModes
 import com.example.sounds.player.PlayerState
 import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.utils.PreviewColumn
@@ -21,6 +22,7 @@ fun ControlSectionSongPlay(
     playbackActions: PlaybackActions,
     onPlaySong: () -> Unit,
     isShuffled: Boolean,
+    playbackRepeatMode: PlaybackRepeatModes
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -42,6 +44,7 @@ fun ControlSectionSongPlay(
             playbackActions = playbackActions,
             onPlay = onPlaySong,
             isShuffled = isShuffled,
+            playbackRepeatMode = playbackRepeatMode,
         )
     }
 }
@@ -57,6 +60,7 @@ private fun ControlSectionSongPlayPreview() {
             playbackActions = dummyPlaybackActions,
             onPlaySong = {},
             isShuffled = false,
+            playbackRepeatMode = PlaybackRepeatModes.NoRepeat,
         )
     }
 }

@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySongList
 import com.example.sounds.player.PlaybackActions
+import com.example.sounds.player.PlaybackRepeatModes
 import com.example.sounds.player.PlayerState
 import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.song_list.SongList
@@ -24,6 +25,7 @@ fun SongPlayingScreen(
     currentSong: Song?,
     songQueue: List<Song>,
     isShuffled: Boolean,
+    playbackRepeatMode: PlaybackRepeatModes,
     currentTrackNumber: Int,
     prevSongAAFP: String?,
     nextSongAAFP: String?,
@@ -54,6 +56,7 @@ fun SongPlayingScreen(
                 playbackActions = playbackActions,
                 songQueue = songQueue,
                 isShuffled = isShuffled,
+                playbackRepeatMode = playbackRepeatMode,
                 currentSong = currentSong,
                 prevSongAAFP = prevSongAAFP,
                 nextSongAAFP = nextSongAAFP,
@@ -75,6 +78,7 @@ private fun SongPlayingScreenPreview() {
             playbackActions = dummyPlaybackActions,
             songQueue = dummySongList,
             isShuffled = false,
+            playbackRepeatMode = PlaybackRepeatModes.NoRepeat,
             currentSong = null,
             prevSongAAFP = null,
             nextSongAAFP = null,

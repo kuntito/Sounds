@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySongList
 import com.example.sounds.player.PlaybackActions
+import com.example.sounds.player.PlaybackRepeatModes
 import com.example.sounds.player.PlayerState
 import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.song_playing.ControlSectionSongPlay
@@ -29,6 +30,7 @@ fun ExpandedSheetComponents(
     onPlaySong: () -> Unit,
     isSwipingToAnotherSong: Boolean = false,
     isShuffled: Boolean,
+    playbackRepeatMode: PlaybackRepeatModes,
     currentTrackNumber: Int,
     totalTracks: Int,
     spaceFromBottom: Int = 0,
@@ -59,6 +61,7 @@ fun ExpandedSheetComponents(
                 playbackActions = playbackActions,
                 onPlaySong = onPlaySong,
                 isShuffled = isShuffled,
+                playbackRepeatMode = playbackRepeatMode,
             )
             Spacer(modifier = Modifier.weight(1f))
             TrackPositionInQueue(
@@ -83,6 +86,7 @@ private fun ExpandedSheetComponentsPreview() {
             playbackActions = dummyPlaybackActions,
             onPlaySong = {},
             isShuffled = false,
+            playbackRepeatMode = PlaybackRepeatModes.NoRepeat,
             currentTrackNumber = 3,
             totalTracks = 12
         )

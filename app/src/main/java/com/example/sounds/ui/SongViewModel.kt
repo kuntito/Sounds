@@ -43,7 +43,7 @@ class SongViewModel(
     val nextSong = queueManager.nextSong
     val isShuffled = queueManager.isShuffled
     val currentTrackNumber = queueManager.currentTrackNumber
-
+    val playbackRepeatMode = queueManager.playbackRepeatMode
 
     val songs: StateFlow<List<Song>> = repository.getSongs()
         .map { entities -> entities.map{ it.toSong() } }
@@ -65,7 +65,7 @@ class SongViewModel(
                     }
                 }
 
-                MusicForegroundService.Actions.ACTION_NEXT_SONG -> onNextSong()
+                MusicForegroundService.Actions.ACTION_NEXT_SONG -> onNextSong(isUserPressNext = true)
                 MusicForegroundService.Actions.ACTION_PREVIOUS_SONG -> onPreviousSong()
                 MusicForegroundService.Actions.ACTION_SEEK_TO -> {
                     val pos = p1.getLongExtra(
@@ -84,7 +84,7 @@ class SongViewModel(
     init {
         viewModelScope.launch {
             songPlayer.onPlaybackComplete.collect {
-                onNextSong()
+                onNextSong(isUserPressNext = false)
             }
         }
 
@@ -157,8 +157,8 @@ class SongViewModel(
         songPlayer.seekTo(progress)
     }
 
-    fun onNextSong() {
-        val nextSong = queueManager.next()
+    fun onNextSong(isUserPressNext: Boolean) {
+        val nextSong = queueManager.next(isUserPressNext)
         nextSong?.let {
             playSong(it)
         }
@@ -179,13 +179,18 @@ class SongViewModel(
         queueManager.toggleShuffle()
     }
 
+    fun toggleRepeatMode() {
+        queueManager.toggleRepeatMode()
+    }
+
     val playbackActions = PlaybackActions(
         onPlay = ::playSong,
         onPause = ::pauseSong,
         onSeekTo = ::seekSongTo,
-        onNext = ::onNextSong,
+        onNext = { onNextSong(isUserPressNext = true) },
         onPrev = ::onPreviousSong,
         toggleShuffle = ::toggleShuffle,
+        toggleRepeatMode = ::toggleRepeatMode,
         onSwapSong = ::onSwapSong,
         onSongItemClick = ::onSongItemClick,
     )

@@ -9,6 +9,7 @@ data class PlaybackActions (
     val onNext: () -> Unit,
     val onPrev: () -> Unit,
     val toggleShuffle: () -> Unit,
+    val toggleRepeatMode: () -> Unit,
     val onSwapSong: (Int, Int) -> Unit,
     val onSongItemClick: (Int, List<Song>) -> Unit,
 )
@@ -20,6 +21,7 @@ val dummyPlaybackActions = PlaybackActions(
     onNext = {},
     onPrev = {},
     toggleShuffle = {},
+    toggleRepeatMode = {},
     onSwapSong = { _, _ ->},
     onSongItemClick = { _, _ -> },
 )

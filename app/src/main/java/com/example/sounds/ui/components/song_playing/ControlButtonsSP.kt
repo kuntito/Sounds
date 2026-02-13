@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sounds.player.PlaybackActions
+import com.example.sounds.player.PlaybackRepeatModes
 import com.example.sounds.player.PlayerState
 import com.example.sounds.player.dummyPlaybackActions
 import com.example.sounds.ui.components.utils.PreviewColumn
@@ -20,6 +21,7 @@ fun ControlButtonsSongPlay(
     playbackActions: PlaybackActions,
     onPlay: () -> Unit,
     isShuffled: Boolean,
+    playbackRepeatMode: PlaybackRepeatModes,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -39,7 +41,10 @@ fun ControlButtonsSongPlay(
             onNext = playbackActions.onNext,
             onPrev = playbackActions.onPrev,
         )
-        RepeatBtn()
+        RepeatBtn(
+            repeatMode = playbackRepeatMode,
+            toggleRepeat = playbackActions.toggleRepeatMode
+        )
     }
 }
 
@@ -55,6 +60,7 @@ private fun ControlButtonsSongPlayPreview() {
             onPlay = {},
             playbackActions = dummyPlaybackActions,
             isShuffled = false,
+            playbackRepeatMode = PlaybackRepeatModes.NoRepeat,
         )
     }
 }
