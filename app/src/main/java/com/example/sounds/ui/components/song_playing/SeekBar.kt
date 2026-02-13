@@ -14,7 +14,10 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,9 +53,19 @@ fun SeekBar(
     val showThumb = isPressed || isDragged
     val thumbColor = if (showThumb) colorTelli.copy(alpha = 0.5f) else Color.Transparent
 
+    var localProgress by remember { mutableFloatStateOf(progress) }
+    var isDraggingSlider by remember { mutableStateOf(false) }
+
     Slider(
-        value = progress,
-        onValueChange = onProgressChange,
+        value = if (isDraggingSlider) localProgress else progress,
+        onValueChange = {
+            isDraggingSlider = true
+            localProgress = it
+        },
+        onValueChangeFinished = {
+            onSeekTo(localProgress)
+            isDraggingSlider = false
+        },
         colors = colors,
         interactionSource = interactionSource,
         track = { sliderState ->
