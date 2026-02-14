@@ -1,6 +1,6 @@
 package com.example.sounds.data.models
 
-import com.example.sounds.data.local.SongEntity
+import com.example.sounds.data.local.song.SongEntity
 
 data class Song(
     val id: String,

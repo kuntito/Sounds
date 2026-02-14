@@ -3,8 +3,8 @@ package com.example.sounds.data
 import android.content.Context
 import android.os.Environment
 import android.util.Log
-import com.example.sounds.data.local.SongDao
-import com.example.sounds.data.local.SongEntity
+import com.example.sounds.data.local.song.SongDao
+import com.example.sounds.data.local.song.SongEntity
 import com.example.sounds.data.remote.FileDownloader
 import com.example.sounds.data.remote.SongWithUrl
 import com.example.sounds.data.remote.SoundsApi
@@ -12,9 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import retrofit2.HttpException
 import java.io.File
-import java.io.IOException
 
 class SoundsRepository(
     private val songDao: SongDao,
