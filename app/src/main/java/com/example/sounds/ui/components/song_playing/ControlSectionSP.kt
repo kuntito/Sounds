@@ -32,6 +32,7 @@ fun ControlSectionSongPlay(
         SeekBar(
             width = width * 1.07f, // looks better this way
             progress = playerState.playProgress,
+            durationMs = playerState.durationMs,
             onSeekTo = playbackActions.onSeekTo,
         )
         Spacer(

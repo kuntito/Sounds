@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sounds.ui.components.SeekBarDurationPopup
 import com.example.sounds.ui.components.utils.PreviewColumn
 import com.example.sounds.ui.theme.colorAguero
 import com.example.sounds.ui.theme.colorTelli
@@ -33,11 +35,9 @@ fun SeekBar(
     modifier: Modifier = Modifier,
     width: Float = 256f,
     progress: Float,
+    durationMs: Int,
     onSeekTo: (Float) -> Unit,
 ) {
-    val onProgressChange: (Float) -> Unit = {
-        onSeekTo(it)
-    }
 
     val colors = SliderDefaults.colors(
         thumbColor = colorTelli,
@@ -56,50 +56,67 @@ fun SeekBar(
     var localProgress by remember { mutableFloatStateOf(progress) }
     var isDraggingSlider by remember { mutableStateOf(false) }
 
-    Slider(
-        value = if (isDraggingSlider) localProgress else progress,
-        onValueChange = {
-            isDraggingSlider = true
-            localProgress = it
-        },
-        onValueChangeFinished = {
-            onSeekTo(localProgress)
-            isDraggingSlider = false
-        },
-        colors = colors,
-        interactionSource = interactionSource,
-        track = { sliderState ->
-            SliderDefaults.Track(
-                colors = colors,
-                sliderState = sliderState,
-                drawStopIndicator = null,
-                thumbTrackGapSize = 0.dp,
-                modifier = Modifier
-                    .height(4.dp),
-            )
-        },
-        thumb = {
-            Box(
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(
-                        color = thumbColor,
-                        shape = CircleShape
-                    )
-            )
-        },
+    // TODO need better names, distinguish 'tween localProgress and progress, from view model.
+    val displayProgress = if (isDraggingSlider) localProgress else progress
+
+    Box(
         modifier = modifier
             .width(width.dp)
-    )
+    ) {
+        if (isDraggingSlider) {
+            SeekBarDurationPopup(
+                verticalOffset = -40,
+                progress = displayProgress,
+                audioDuration = durationMs,
+            )
+        }
+        Slider(
+            value = displayProgress,
+            onValueChange = {
+                isDraggingSlider = true
+                localProgress = it
+            },
+            onValueChangeFinished = {
+                onSeekTo(localProgress)
+                isDraggingSlider = false
+            },
+            colors = colors,
+            interactionSource = interactionSource,
+            track = { sliderState ->
+                SliderDefaults.Track(
+                    colors = colors,
+                    sliderState = sliderState,
+                    drawStopIndicator = null,
+                    thumbTrackGapSize = 0.dp,
+                    modifier = Modifier
+                        .height(4.dp),
+                )
+            },
+            thumb = {
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .background(
+                            color = thumbColor,
+                            shape = CircleShape
+                        )
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+    }
 }
 
 @Preview
 @Composable
 private fun SeekBarPreview() {
     PreviewColumn{
+        val threeMinutesMs = 180000
         SeekBar(
             progress = 0f,
             onSeekTo = {},
+            durationMs = threeMinutesMs
         )
     }
 }
