@@ -53,11 +53,10 @@ fun SeekBar(
     val showThumb = isPressed || isDragged
     val thumbColor = if (showThumb) colorTelli.copy(alpha = 0.5f) else Color.Transparent
 
-    var localProgress by remember { mutableFloatStateOf(progress) }
+    var seekPosition by remember { mutableFloatStateOf(progress) }
     var isDraggingSlider by remember { mutableStateOf(false) }
 
-    // TODO need better names, distinguish 'tween localProgress and progress, from view model.
-    val displayProgress = if (isDraggingSlider) localProgress else progress
+    val visibleProgress = if (isDraggingSlider) seekPosition else progress
 
     Box(
         modifier = modifier
@@ -66,18 +65,18 @@ fun SeekBar(
         if (isDraggingSlider) {
             SeekBarDurationPopup(
                 verticalOffset = -40,
-                progress = displayProgress,
+                progress = visibleProgress,
                 audioDuration = durationMs,
             )
         }
         Slider(
-            value = displayProgress,
+            value = visibleProgress,
             onValueChange = {
                 isDraggingSlider = true
-                localProgress = it
+                seekPosition = it
             },
             onValueChangeFinished = {
-                onSeekTo(localProgress)
+                onSeekTo(seekPosition)
                 isDraggingSlider = false
             },
             colors = colors,

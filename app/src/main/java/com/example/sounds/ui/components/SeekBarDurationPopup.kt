@@ -3,7 +3,6 @@ package com.example.sounds.ui.components
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
@@ -13,9 +12,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.example.sounds.ui.components.utils.PreviewColumn
 
-
-// TODO descriptive name
-private fun formatMs(ms: Int): String {
+private fun formatMsToMinSec(ms: Int): String {
     val totalSeconds = ms / 1000
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
@@ -31,7 +28,7 @@ fun SeekBarDurationPopup(
 ) {
 
     val currentMs = (progress * audioDuration).toInt()
-    val timeText = formatMs(currentMs)
+    val timeText = formatMsToMinSec(currentMs)
 
     val density = LocalDensity.current
 
