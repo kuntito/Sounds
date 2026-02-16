@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -17,9 +18,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.sounds.ui.HomeScreenTabs
 import com.example.sounds.ui.theme.colorKDB
 import com.example.sounds.ui.theme.colorTelli
+import com.example.sounds.ui.theme.tsOrion
 import kotlinx.coroutines.launch
 
 @Composable
@@ -28,7 +29,7 @@ fun RowPagerWithTabs(
     tabs: List<String>,
     content: @Composable (Int) -> Unit
 ) {
-    val screensPagerState = rememberPagerState( pageCount = { HomeScreenTabs.allTabs.size } )
+    val screensPagerState = rememberPagerState( pageCount = { tabs.size } )
     val coroutineScope = rememberCoroutineScope()
 
 
@@ -40,8 +41,8 @@ fun RowPagerWithTabs(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center,
         ) {
-            val tabWidth = 90
-            val tabRowWidth = tabWidth * HomeScreenTabs.allTabs.size
+            val tabWidth = 100
+            val tabRowWidth = tabWidth * tabs.size
             TabRow (
                 selectedTabIndex = screensPagerState.currentPage,
                 containerColor = colorKDB,
@@ -57,10 +58,11 @@ fun RowPagerWithTabs(
                 },
                 divider = {},
                 modifier = Modifier
+                    .padding(bottom = 16.dp)
                     .width(tabRowWidth.dp)
                 ,
             ) {
-                HomeScreenTabs.allTabs.forEachIndexed { index, tab ->
+                tabs.forEachIndexed { index, tabTitle ->
                     Tab(
                         selected = screensPagerState.currentPage == index,
                         onClick = {
@@ -68,7 +70,12 @@ fun RowPagerWithTabs(
                                 screensPagerState.animateScrollToPage(index)
                             }
                         },
-                        text = { Text(tab.title) },
+                        text = {
+                            Text(
+                                text = tabTitle,
+                                style = tsOrion,
+                            )
+                        },
                         modifier = Modifier
                             .width(tabWidth.dp)
 

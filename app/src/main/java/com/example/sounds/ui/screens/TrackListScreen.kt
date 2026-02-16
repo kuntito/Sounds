@@ -19,7 +19,7 @@ fun TrackListScreen(
     playerState: PlayerState,
     playbackActions: PlaybackActions,
     currentSong: Song?,
-    bottomEdgePadding: Int,
+    miniPlayerHeight: Int,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -29,7 +29,7 @@ fun TrackListScreen(
         SongList(
             songList = songs,
             topEdgePadding = 16f,
-            bottomEdgePadding = bottomEdgePadding * 1.2f,
+            bottomEdgePadding = miniPlayerHeight * 1.2f,
             playerState = playerState,
             onSongItemClick = playbackActions.onSongItemClick,
             currentSong = currentSong,
@@ -48,7 +48,7 @@ private fun TrackListScreenPreview() {
             playerState = PlayerState(),
             playbackActions = dummyPlaybackActions,
             currentSong = null,
-            bottomEdgePadding = 0,
+            miniPlayerHeight = 0,
         )
     }
 }

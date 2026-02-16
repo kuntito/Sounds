@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sounds.data.SoundsRepository
+import com.example.sounds.data.models.Playlist
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.toSong
 import com.example.sounds.player.MusicForegroundService
@@ -44,6 +45,10 @@ class SongViewModel(
     val isShuffled = queueManager.isShuffled
     val currentTrackNumber = queueManager.currentTrackNumber
     val playbackRepeatMode = queueManager.playbackRepeatMode
+
+    val playlists = listOf<Playlist>()
+    fun onPlaylistClick(playlistId: Long) {}
+    fun onCreatePlaylistClick() {}
 
     val songs: StateFlow<List<Song>> = repository.getSongs()
         .map { entities -> entities.map{ it.toSong() } }

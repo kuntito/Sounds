@@ -87,9 +87,14 @@ class MainActivity : ComponentActivity() {
                                     playerState = playerState,
                                     playbackActions = songViewModel.playbackActions,
                                     currentSong = currentSong,
-                                    bottomEdgePadding = miniPlayerHeight,
+                                    miniPlayerHeight = miniPlayerHeight,
                                 )
-                                is HomeScreenTabs.Playlists -> PlaylistScreen()
+                                is HomeScreenTabs.Playlists -> PlaylistScreen(
+                                    playlists = songViewModel.playlists,
+                                    miniPlayerHeight = miniPlayerHeight,
+                                    onPlaylistClick = songViewModel::onPlaylistClick,
+                                    onCreatePlaylistClick = songViewModel::onCreatePlaylistClick,
+                                )
                             }
                         }
                         AnimatedVisibility(
