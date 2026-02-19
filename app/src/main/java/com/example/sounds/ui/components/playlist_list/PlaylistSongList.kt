@@ -1,4 +1,4 @@
-package com.example.sounds.ui.components.playlist
+package com.example.sounds.ui.components.playlist_list
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize

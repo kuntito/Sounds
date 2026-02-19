@@ -11,13 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sounds.data.models.Playlist
 import com.example.sounds.data.models.dummyPlaylistList
-import com.example.sounds.ui.components.playlist.CreatePlaylistButton
-import com.example.sounds.ui.components.playlist.NoPlaylistPrompt
-import com.example.sounds.ui.components.playlist.PlaylistList
+import com.example.sounds.ui.components.playlist_list.CreatePlaylistButton
+import com.example.sounds.ui.components.playlist_list.NoPlaylistPrompt
+import com.example.sounds.ui.components.playlist_list.PlaylistList
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
-fun PlaylistScreen(
+fun PlaylistListScreen(
     modifier: Modifier = Modifier,
     playlists: List<Playlist>,
     onPlaylistClick: (Long) -> Unit,
@@ -57,11 +57,11 @@ fun PlaylistScreen(
 
 @Preview
 @Composable
-private fun PlaylistScreenPreview() {
+private fun PlaylistListScreenPreview() {
     PreviewColumn(
         enablePadding = false
     ) {
-        PlaylistScreen(
+        PlaylistListScreen(
             playlists = dummyPlaylistList,
             onPlaylistClick = {},
             onCreatePlaylistClick = {},

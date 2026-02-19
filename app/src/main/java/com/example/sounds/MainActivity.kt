@@ -26,7 +26,7 @@ import com.example.sounds.ui.SongViewModel
 import com.example.sounds.ui.SongViewModelFactory
 import com.example.sounds.ui.components.utils.RowPagerWithTabs
 import com.example.sounds.ui.components.song_playing.sp_sheet.SongPlayingSheet
-import com.example.sounds.ui.screens.PlaylistScreen
+import com.example.sounds.ui.screens.PlaylistListScreen
 import com.example.sounds.ui.screens.TrackListScreen
 import com.example.sounds.ui.theme.SoundsTheme
 
@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                     currentSong = currentSong,
                                     miniPlayerHeight = miniPlayerHeight,
                                 )
-                                is HomeScreenTabs.Playlists -> PlaylistScreen(
+                                is HomeScreenTabs.Playlists -> PlaylistListScreen(
                                     playlists = songViewModel.playlists,
                                     miniPlayerHeight = miniPlayerHeight,
                                     onPlaylistClick = songViewModel::onPlaylistClick,
