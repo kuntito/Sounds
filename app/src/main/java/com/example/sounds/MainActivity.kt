@@ -24,7 +24,7 @@ import com.example.sounds.data.remote.SoundsApiClient
 import com.example.sounds.ui.HomeScreenTabs
 import com.example.sounds.ui.SongViewModel
 import com.example.sounds.ui.SongViewModelFactory
-import com.example.sounds.ui.components.RowPagerWithTabs
+import com.example.sounds.ui.components.utils.RowPagerWithTabs
 import com.example.sounds.ui.components.song_playing.sp_sheet.SongPlayingSheet
 import com.example.sounds.ui.screens.PlaylistScreen
 import com.example.sounds.ui.screens.TrackListScreen
