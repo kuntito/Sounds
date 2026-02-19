@@ -23,3 +23,8 @@ val tsHush = baseStyle.copy(
     fontSize = 12.sp,
     fontWeight = FontWeight.Thin,
 )
+
+val tsMonoMini = baseStyle.copy(
+    fontFamily = FontFamily.Monospace,
+    fontSize = 12.sp,
+)
