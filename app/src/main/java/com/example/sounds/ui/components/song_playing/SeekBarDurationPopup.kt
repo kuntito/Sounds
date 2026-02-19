@@ -1,4 +1,4 @@
-package com.example.sounds.ui.components
+package com.example.sounds.ui.components.song_playing
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
