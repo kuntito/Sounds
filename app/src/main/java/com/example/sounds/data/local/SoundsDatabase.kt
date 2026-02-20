@@ -16,7 +16,7 @@ import com.example.sounds.data.local.playlist.PlaylistSongEntity
         PlaylistEntity::class,
         PlaylistSongEntity::class,
     ],
-    version = 2,
+    version = 3,
 )
 abstract class SoundsDb: RoomDatabase() {
     abstract fun songDao(): SongDao
@@ -34,6 +34,7 @@ abstract class SoundsDb: RoomDatabase() {
                     "sounds_db"
                 )
                     .addMigrations(SONGDB_MIGRATION_1_2)
+                    .addMigrations(SONGDB_MIGRATION_2_3)
                     .build()
 
                 INSTANCE = instance

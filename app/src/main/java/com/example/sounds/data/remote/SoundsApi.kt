@@ -6,6 +6,7 @@ data class SongWithUrl(
     val id: String,
     val title: String,
     val artist: String,
+    val durationMillis: Int,
     val albumArtUrl: String,
     val songUrl: String,
 )

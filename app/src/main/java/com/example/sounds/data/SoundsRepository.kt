@@ -78,6 +78,7 @@ class SoundsRepository(
                     artist = songObj.artist,
                     songFilePath = destSongFile.absolutePath,
                     albumArtFilePath = destAlbumArtFile.absolutePath,
+                    durationMillis = songObj.durationMillis,
                 )
                 songDao.insert(songEntity)
             }

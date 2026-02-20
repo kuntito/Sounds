@@ -24,3 +24,9 @@ val SONGDB_MIGRATION_1_2 = object: Migration(1, 2) {
         """.trimIndent())
     }
 }
+
+val SONGDB_MIGRATION_2_3 = object: Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE songs ADD COLUMN durationMillis INTEGER NOT NULL DEFAULT 0")
+    }
+}
