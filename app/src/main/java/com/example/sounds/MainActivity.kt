@@ -10,6 +10,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,12 +21,14 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.sounds.data.SoundsRepository
 import com.example.sounds.data.local.SoundsDb
+import com.example.sounds.data.models.DropdownMenuOption
 import com.example.sounds.data.remote.SoundsApiClient
 import com.example.sounds.ui.HomeScreenTabs
 import com.example.sounds.ui.SongViewModel
 import com.example.sounds.ui.SongViewModelFactory
-import com.example.sounds.ui.components.utils.RowPagerWithTabs
 import com.example.sounds.ui.components.song_playing.sp_sheet.SongPlayingSheet
+import com.example.sounds.ui.components.utils.RowPagerWithTabs
+import com.example.sounds.ui.components.utils.SoundsTopAppBar
 import com.example.sounds.ui.screens.PlaylistListScreen
 import com.example.sounds.ui.screens.TrackListScreen
 import com.example.sounds.ui.theme.SoundsTheme
@@ -66,7 +69,23 @@ class MainActivity : ComponentActivity() {
             val playbackRepeatMode by songViewModel.playbackRepeatMode.collectAsState()
 
             SoundsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                val topBarMenuOptions = listOf<DropdownMenuOption>(
+                    DropdownMenuOption(
+                        label = "sync",
+                        onClick = {},
+                    )
+                )
+                Scaffold(
+                    topBar = {
+                        SoundsTopAppBar(
+                            dropdownOptions = topBarMenuOptions,
+                        )
+                    },
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .fillMaxSize()
+                    ,
+                ) { innerPadding ->
                     Box(
                         modifier = Modifier
                             .padding(innerPadding)
