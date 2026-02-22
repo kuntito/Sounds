@@ -7,7 +7,7 @@ import com.example.sounds.data.local.song.SongDao
 import com.example.sounds.data.local.song.SongEntity
 import com.example.sounds.data.remote.FileDownloader
 import com.example.sounds.data.remote.SongWithUrl
-import com.example.sounds.data.remote.SoundsApi
+import com.example.sounds.data.remote.SoundsApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
@@ -16,7 +16,7 @@ import java.io.File
 
 class SoundsRepository(
     private val songDao: SongDao,
-    private val soundsApi: SoundsApi,
+    private val soundsApi: SoundsApiService,
     private val context: Context,
 ) {
     fun getSongs(): Flow<List<SongEntity>> = flow {

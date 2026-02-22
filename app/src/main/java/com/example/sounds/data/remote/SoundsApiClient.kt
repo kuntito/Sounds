@@ -29,6 +29,6 @@ object SoundsApiClient {
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 
-    val soundsApi: SoundsApi = retrofit.create(SoundsApi::class.java)
+    val soundsApi: SoundsApiService = retrofit.create(SoundsApiService::class.java)
 }
 
