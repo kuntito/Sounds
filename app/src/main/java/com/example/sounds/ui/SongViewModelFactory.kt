@@ -3,7 +3,7 @@ package com.example.sounds.ui
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.sounds.data.SoundsRepository
+import com.example.sounds.data.repository.SoundsRepository
 
 class SongViewModelFactory(
     private val application: Application,

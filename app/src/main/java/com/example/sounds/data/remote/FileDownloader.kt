@@ -10,6 +10,10 @@ import java.io.FileOutputStream
 object FileDownloader {
     private val httpClient = OkHttpClient()
 
+    /**
+     * downloads a file from the given url and saves it to the destination file path.
+     * returns true if the download was successful, false otherwise.
+     */
     suspend fun downloadFile(url: String, destFile: File): Boolean {
         return withContext(Dispatchers.IO) {
             try {

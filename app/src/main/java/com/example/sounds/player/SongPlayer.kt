@@ -67,7 +67,6 @@ class SongPlayer(
 
     fun play(
         song: Song,
-        filePath: String
     ) {
         playSongJob?.cancel()
         playSongJob = scope.launch(Dispatchers.IO) {
@@ -76,7 +75,7 @@ class SongPlayer(
                 val isNewSong = _playerState.value.loadedSong?.id != song.id
 
                 if (isNewSong) {
-                    startPlayback(filePath)
+                    startPlayback(song.songFilePath)
                     _playerState.value = _playerState.value.copy(
                         loadedSong = song
                     )

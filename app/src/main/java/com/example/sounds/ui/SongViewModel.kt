@@ -8,10 +8,11 @@ import android.content.IntentFilter
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sounds.data.SoundsRepository
+import com.example.sounds.data.repository.SoundsRepository
 import com.example.sounds.data.models.Playlist
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.toSong
+import com.example.sounds.data.repository.SyncManager
 import com.example.sounds.player.MusicForegroundService
 import com.example.sounds.player.PlaybackActions
 import com.example.sounds.player.QueueManager
@@ -25,11 +26,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+// TODO clean up view model
 class SongViewModel(
     application: Application,
     private val repository: SoundsRepository,
 ): AndroidViewModel(application) {
-
     private var playSongJob: Job? = null
     private val songPlayer = SongPlayer(viewModelScope, application)
     val playerState = songPlayer.playerState
@@ -58,6 +59,10 @@ class SongViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList(),
         )
+
+    private val syncManager = SyncManager(viewModelScope, repository::sync)
+    val syncState = syncManager.syncState
+    fun sync() = syncManager.triggerSync()
 
     private val playerNotificationBroadcastReceiver = object: BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
@@ -145,11 +150,8 @@ class SongViewModel(
     fun playSong(song: Song) {
         playSongJob?.cancel()
         playSongJob = viewModelScope.launch {
-            val path = repository.getLocalPath(song.id) ?: return@launch
-
             songPlayer.play(
                 song = song,
-                filePath = path,
             )
         }
     }
