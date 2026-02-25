@@ -15,7 +15,7 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
 fun TrackListFragment(
-    songs: List<Song>,
+    trackList: List<Song>,
     playerState: PlayerState,
     playbackActions: PlaybackActions,
     currentSong: Song?,
@@ -27,7 +27,7 @@ fun TrackListFragment(
             .fillMaxSize()
     ) {
         SongList(
-            songList = songs,
+            songList = trackList,
             topEdgePadding = 16f,
             bottomEdgePadding = miniPlayerHeight * 1.2f,
             playerState = playerState,
@@ -44,7 +44,7 @@ private fun TrackListFragmentPreview() {
         enablePadding = false
     ) {
         TrackListFragment(
-            songs = dummySongList,
+            trackList = dummySongList,
             playerState = PlayerState(),
             playbackActions = dummyPlaybackActions,
             currentSong = null,

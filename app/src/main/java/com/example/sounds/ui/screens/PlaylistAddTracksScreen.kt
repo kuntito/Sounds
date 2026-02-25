@@ -7,17 +7,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.dummySongList
+import com.example.sounds.ui.SongViewModel
 import com.example.sounds.ui.components.playlist_add_tracks.AddTrackSearchBar
 import com.example.sounds.ui.components.playlist_add_tracks.AddTracksHeader
 import com.example.sounds.ui.components.playlist_add_tracks.AddTracksSearchResultList
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
+fun PlaylistAddTracksScreenRoot(
+    modifier: Modifier = Modifier,
+    songViewModel: SongViewModel,
+) {
+    val searchResults = emptyList<Song>()
+    PlaylistAddTracksScreen(
+        searchResults = searchResults,
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun PlaylistAddTracksScreen(
     modifier: Modifier = Modifier,
     searchResults: List<Song>,
-    topEdgePadding: Float,
-    bottomEdgePadding: Float,
 ) {
     Column(
         modifier = modifier
@@ -30,8 +41,6 @@ fun PlaylistAddTracksScreen(
             onQueryChange = {},
         )
         AddTracksSearchResultList(
-            topEdgePadding = topEdgePadding,
-            bottomEdgePadding = bottomEdgePadding,
             songSearchResults = searchResults,
             onAddTrack = {},
         )
@@ -44,8 +53,6 @@ private fun PlaylistAddTracksScreenPreview() {
     PreviewColumn {
         PlaylistAddTracksScreen(
             searchResults = dummySongList,
-            topEdgePadding = 16f,
-            bottomEdgePadding = 16f,
         )
     }
 }

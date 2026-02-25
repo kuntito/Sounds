@@ -11,8 +11,6 @@ import com.example.sounds.ui.components.utils.ShrinkableList
 @Composable
 fun AddTracksSearchResultList(
     modifier: Modifier = Modifier,
-    topEdgePadding: Float,
-    bottomEdgePadding: Float,
     songSearchResults: List<Song>,
     onAddTrack: (Song) -> Unit,
 ) {
@@ -22,8 +20,8 @@ fun AddTracksSearchResultList(
         items = songSearchResults,
         getId = { song -> song.id },
         onRemove = onAddTrack,
-        topEdgePadding = topEdgePadding,
-        bottomEdgePadding = bottomEdgePadding,
+        topEdgePadding = 16f,
+        bottomEdgePadding = 16f,
         getDisplayMessageOnShrink = ::getDisplayMessageOnShrink,
         modifier = modifier,
     ) { song ->
@@ -40,8 +38,6 @@ fun AddTracksSearchResultList(
 private fun AddTracksSearchResultListPreview() {
     PreviewColumn() {
         AddTracksSearchResultList(
-            topEdgePadding = 16f,
-            bottomEdgePadding = 16f,
             songSearchResults = dummySongList,
             onAddTrack = {}
         )

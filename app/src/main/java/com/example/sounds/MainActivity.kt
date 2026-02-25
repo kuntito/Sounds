@@ -7,6 +7,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -21,7 +22,6 @@ import com.example.sounds.data.remote.SoundsApiDataSource
 import com.example.sounds.data.repository.SoundsRepository
 import com.example.sounds.ui.SongViewModel
 import com.example.sounds.ui.SongViewModelFactory
-import com.example.sounds.ui.screens.home_screen.HomeScreen
 import com.example.sounds.ui.theme.SoundsTheme
 import com.example.sounds.ui.theme.colorKDB
 
@@ -56,14 +56,14 @@ class MainActivity : ComponentActivity() {
             )
         )
         setContent {
-            // TODO implement event channels across screens
             SoundsTheme {
                 Box(
                     modifier = Modifier
+                        .background(color = colorKDB)
                         .fillMaxSize()
                         .systemBarsPadding()
                 ){
-                    HomeScreen(
+                    Navigation(
                         songViewModel = songViewModel,
                     )
                 }
