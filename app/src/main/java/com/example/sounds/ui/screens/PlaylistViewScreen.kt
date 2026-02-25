@@ -16,6 +16,7 @@ import com.example.sounds.player.PlayerState
 import com.example.sounds.ui.components.playlist_view.PlaylistViewHeader
 import com.example.sounds.ui.components.song_list.SongList
 import com.example.sounds.ui.components.utils.PreviewColumn
+import com.example.sounds.utils.millisToMinutes
 
 @Composable
 fun PlaylistViewScreen(
@@ -28,8 +29,9 @@ fun PlaylistViewScreen(
     playerState: PlayerState,
     onSongItemClick: (Int, List<Song>) -> Unit,
 ) {
-    // TODO modify schema to add durationMs to each song.
-    val playlistDurationMins = 30
+    val playlistDurationMins = millisToMinutes(
+        playlistSongs.sumOf { it.durationMillis }
+    )
     Column(
         modifier = modifier
             .fillMaxSize()
