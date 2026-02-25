@@ -1,4 +1,4 @@
-package com.example.sounds.ui.screens
+package com.example.sounds.ui.screens.home_screen.fragments
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,7 @@ import com.example.sounds.ui.components.playlist_list.PlaylistList
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
-fun PlaylistListScreen(
+fun PlaylistListFragment(
     modifier: Modifier = Modifier,
     playlists: List<Playlist>,
     onPlaylistClick: (Long) -> Unit,
@@ -57,11 +57,11 @@ fun PlaylistListScreen(
 
 @Preview
 @Composable
-private fun PlaylistListScreenPreview() {
+private fun PlaylistListFragmentPreview() {
     PreviewColumn(
         enablePadding = false
     ) {
-        PlaylistListScreen(
+        PlaylistListFragment(
             playlists = dummyPlaylistList,
             onPlaylistClick = {},
             onCreatePlaylistClick = {},

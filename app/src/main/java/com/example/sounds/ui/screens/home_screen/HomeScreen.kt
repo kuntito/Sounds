@@ -1,4 +1,4 @@
-package com.example.sounds.ui.screens
+package com.example.sounds.ui.screens.home_screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
@@ -19,6 +19,8 @@ import com.example.sounds.ui.components.song_playing.sp_sheet.SongPlayingSheet
 import com.example.sounds.ui.components.utils.AppSnackBar
 import com.example.sounds.ui.components.utils.RowPagerWithTabs
 import com.example.sounds.ui.components.utils.SoundsTopAppBar
+import com.example.sounds.ui.screens.home_screen.fragments.PlaylistListFragment
+import com.example.sounds.ui.screens.home_screen.fragments.TrackListFragment
 
 @Composable
 fun HomeScreen(
@@ -69,14 +71,14 @@ fun HomeScreen(
                 ,
             ) { page ->
                 when (HomeScreenTabs.allTabs[page]) {
-                    is HomeScreenTabs.TrackList-> TrackListScreen(
+                    is HomeScreenTabs.TrackList-> TrackListFragment(
                         songs = songs,
                         playerState = playerState,
                         playbackActions = songViewModel.playbackActions,
                         currentSong = currentSong,
                         miniPlayerHeight = miniPlayerHeight,
                     )
-                    is HomeScreenTabs.Playlists -> PlaylistListScreen(
+                    is HomeScreenTabs.Playlists -> PlaylistListFragment(
                         playlists = songViewModel.playlists,
                         miniPlayerHeight = miniPlayerHeight,
                         onPlaylistClick = songViewModel::onPlaylistClick,

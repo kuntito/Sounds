@@ -1,4 +1,4 @@
-package com.example.sounds.ui.screens
+package com.example.sounds.ui.screens.home_screen.fragments
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +14,7 @@ import com.example.sounds.ui.components.song_list.SongList
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
-fun TrackListScreen(
+fun TrackListFragment(
     songs: List<Song>,
     playerState: PlayerState,
     playbackActions: PlaybackActions,
@@ -39,11 +39,11 @@ fun TrackListScreen(
 
 @Preview
 @Composable
-private fun TrackListScreenPreview() {
+private fun TrackListFragmentPreview() {
     PreviewColumn(
         enablePadding = false
     ) {
-        TrackListScreen(
+        TrackListFragment(
             songs = dummySongList,
             playerState = PlayerState(),
             playbackActions = dummyPlaybackActions,

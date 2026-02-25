@@ -21,7 +21,7 @@ import com.example.sounds.data.remote.SoundsApiDataSource
 import com.example.sounds.data.repository.SoundsRepository
 import com.example.sounds.ui.SongViewModel
 import com.example.sounds.ui.SongViewModelFactory
-import com.example.sounds.ui.screens.HomeScreen
+import com.example.sounds.ui.screens.home_screen.HomeScreen
 import com.example.sounds.ui.theme.SoundsTheme
 import com.example.sounds.ui.theme.colorKDB
 
