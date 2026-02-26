@@ -15,7 +15,7 @@ import com.example.sounds.ui.components.song_list_item.SongTitleAndArtistName
 import com.example.sounds.ui.components.utils.PreviewColumn
 
 @Composable
-fun SearchSongListItem(
+fun PlaylistAddTrackListItem(
     modifier: Modifier = Modifier,
     title: String,
     artistName: String,
@@ -50,14 +50,14 @@ fun SearchSongListItem(
 
 @Preview
 @Composable
-private fun SearchSongListItemPreview() {
+private fun PlaylistAddTrackListItemPreview() {
     PreviewColumn {
-        SearchSongListItem(
+        PlaylistAddTrackListItem(
             title = "Stronger Than I Was",
             artistName = "Eminem",
             albumArtFilePath = null,
         )
-        SearchSongListItem(
+        PlaylistAddTrackListItem(
             title = "Understand",
             artistName = "Omah Lay",
             albumArtFilePath = null,

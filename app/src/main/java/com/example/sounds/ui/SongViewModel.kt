@@ -17,11 +17,16 @@ import com.example.sounds.player.MusicForegroundService
 import com.example.sounds.player.PlaybackActions
 import com.example.sounds.player.QueueManager
 import com.example.sounds.player.SongPlayer
+import com.example.sounds.playlist.AddTracksManager
 import com.example.sounds.prefDataStore
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -49,9 +54,20 @@ class SongViewModel(
 
     val playlists = listOf<Playlist>()
     fun onPlaylistClick(playlistId: Long) {}
-    fun onCreatePlaylistClick() {}
 
-    val songs: StateFlow<List<Song>> = repository.getSongs()
+    // TODO clean up class after saving playlist
+    private val _addTracksManager = MutableStateFlow<AddTracksManager?>(null)
+    val addTracksManager: StateFlow<AddTracksManager?> = _addTracksManager.asStateFlow()
+    private var createPlaylistJob: Job? = null
+    fun onCreatePlaylistClick() {
+        createPlaylistJob?.cancel()
+        createPlaylistJob = viewModelScope.launch {
+            val initialSongs = allSongs.first()
+            _addTracksManager.value = AddTracksManager(initialSongs)
+        }
+    }
+
+    val allSongs: StateFlow<List<Song>> = repository.getSongs()
         .map { entities -> entities.map{ it.toSong() } }
         .stateIn(
             scope = viewModelScope,

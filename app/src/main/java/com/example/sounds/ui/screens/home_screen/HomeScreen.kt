@@ -39,7 +39,7 @@ fun HomeScreenRoot(
     songViewModel: SongViewModel,
     goToPlaylistAddTracks: () -> Unit,
 ) {
-    val trackList by songViewModel.songs.collectAsState()
+    val trackList by songViewModel.allSongs.collectAsState()
     val playerState by songViewModel.playerState.collectAsState()
     val songQueue by songViewModel.songQueue.collectAsState()
     val currentSong by songViewModel.currentSong.collectAsState()
@@ -121,6 +121,7 @@ fun HomeScreen(
                 .fillMaxSize()
             ,
         ) { innerPadding ->
+            // TODO persist pager page..
             RowPagerWithTabs(
                 tabs = HomeScreenTabs
                     .allTabs

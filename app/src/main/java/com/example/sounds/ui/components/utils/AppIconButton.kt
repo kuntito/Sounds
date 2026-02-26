@@ -17,11 +17,13 @@ fun AppIconButton(
     @DrawableRes iconRes: Int,
     size: Int = 24,
     modifier: Modifier = Modifier,
+    isClickable: Boolean = true,
     onClick: () -> Unit,
 ) {
     ClickableSurface(
         onClick = onClick,
         rippleRadius = size * 1.05f,
+        isClickable = isClickable,
         modifier = modifier
         ,
     ) {
