@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -27,11 +27,11 @@ import kotlinx.coroutines.launch
 fun RowPagerWithTabs(
     modifier: Modifier = Modifier,
     tabs: List<String>,
+    pagerState: PagerState,
     content: @Composable (Int) -> Unit
 ) {
-    val screensPagerState = rememberPagerState( pageCount = { tabs.size } )
-    val coroutineScope = rememberCoroutineScope()
 
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = modifier
@@ -44,13 +44,13 @@ fun RowPagerWithTabs(
             val tabWidth = 100
             val tabRowWidth = tabWidth * tabs.size
             TabRow (
-                selectedTabIndex = screensPagerState.currentPage,
+                selectedTabIndex = pagerState.currentPage,
                 containerColor = colorKDB,
                 contentColor = colorTelli,
                 indicator = { tabPositions ->
                     TabRowDefaults.SecondaryIndicator(
                         modifier = Modifier.tabIndicatorOffset(
-                            tabPositions[screensPagerState.currentPage]
+                            tabPositions[pagerState.currentPage]
                         ),
                         height = 2.dp,
                         color = colorTelli,
@@ -64,10 +64,10 @@ fun RowPagerWithTabs(
             ) {
                 tabs.forEachIndexed { index, tabTitle ->
                     Tab(
-                        selected = screensPagerState.currentPage == index,
+                        selected = pagerState.currentPage == index,
                         onClick = {
                             coroutineScope.launch {
-                                screensPagerState.animateScrollToPage(index)
+                                pagerState.animateScrollToPage(index)
                             }
                         },
                         text = {
@@ -84,7 +84,7 @@ fun RowPagerWithTabs(
             }
         }
         HorizontalPager(
-            state = screensPagerState,
+            state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
         ) { page ->

@@ -19,12 +19,14 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 fun PlaylistAddTracksScreenRoot(
     modifier: Modifier = Modifier,
     songViewModel: SongViewModel,
+    onFinishCreatePlaylist: () -> Unit,
 ) {
     val addTracksManager by songViewModel.addTracksManager.collectAsState()
 
     addTracksManager?.let {
         PlaylistAddTracksScreen(
             addTracksManager = it,
+            onAddFinished = onFinishCreatePlaylist,
             modifier = modifier,
         )
     }
@@ -34,6 +36,7 @@ fun PlaylistAddTracksScreenRoot(
 fun PlaylistAddTracksScreen(
     modifier: Modifier = Modifier,
     addTracksManager: AddTracksManager,
+    onAddFinished: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -41,11 +44,11 @@ fun PlaylistAddTracksScreen(
     ) {
         val songPool by addTracksManager.exposedPool.collectAsState()
         AddTracksHeader(
-            onAddFinished = {},
+            onAddFinished = onAddFinished,
             hasSongs = addTracksManager.hasSongs,
         )
         AddTrackSearchBar(
-            onQueryChange = {},
+            onQueryChange = addTracksManager::onSearchSong,
         )
         PlaylistAddTracksPool(
             addedTracksIds = addTracksManager.addedTracksIds,
@@ -63,7 +66,8 @@ private fun PlaylistAddTracksScreenPreview() {
         PlaylistAddTracksScreen(
             addTracksManager = AddTracksManager(
                 dummySongList
-            )
+            ),
+            onAddFinished = {},
         )
     }
 }

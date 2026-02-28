@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -36,8 +37,13 @@ import androidx.compose.ui.unit.dp
 import com.example.sounds.ui.theme.colorAguero
 import com.example.sounds.ui.theme.colorTelli
 import com.example.sounds.ui.theme.tsOrion
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 /**
  * manages the state of a [CustomSearchTextField].
@@ -57,8 +63,10 @@ import kotlinx.coroutines.flow.asStateFlow
  *   the keyboard when focus is requested programmatically.
  * @param initText optional initial text for the field.
  */
+@OptIn(FlowPreview::class)
 class CustomTextFieldState(
     private val keyboard: SoftwareKeyboardController?,
+    private val coroutineScope: CoroutineScope,
     private val onQueryChange: (String) -> Unit,
     initText: String = "",
 ) {
@@ -73,6 +81,13 @@ class CustomTextFieldState(
 
     private val _isFocused = MutableStateFlow(false)
     val isFocused = _isFocused.asStateFlow()
+
+    init {
+        _textFieldValue
+            .debounce(300)
+            .onEach { onQueryChange(it.text) }
+            .launchIn(coroutineScope)
+    }
 
     fun onFocusChange(newFocusFlag: Boolean) {
         _isFocused.value = newFocusFlag
@@ -100,13 +115,29 @@ class CustomTextFieldState(
 
     fun onTextChange(tfv: TextFieldValue) {
         _textFieldValue.value = tfv
-        onQueryChange(tfv.text)
     }
 
     fun clearText() {
         _textFieldValue.value = TextFieldValue("")
     }
 
+}
+
+@Composable
+fun rememberCustomTextFieldState(
+    onQueryChange: (String) -> Unit,
+    initText: String = "",
+): CustomTextFieldState {
+    val keyboard = LocalSoftwareKeyboardController.current
+    val coroutineScope = rememberCoroutineScope()
+    return remember {
+        CustomTextFieldState(
+            keyboard = keyboard,
+            coroutineScope = coroutineScope,
+            onQueryChange = onQueryChange,
+            initText = initText,
+        )
+    }
 }
 
 // TODO make the color's a data class, `CustomTextFieldColors`
@@ -194,6 +225,7 @@ private fun CustomSearchTextFieldPreview() {
         val keyboard = LocalSoftwareKeyboardController.current
         val textFieldState = CustomTextFieldState(
             keyboard=keyboard,
+            coroutineScope = rememberCoroutineScope(),
             onQueryChange = {},
         )
         CustomSearchTextField(

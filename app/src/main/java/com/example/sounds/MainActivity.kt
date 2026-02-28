@@ -37,6 +37,8 @@ class MainActivity : ComponentActivity() {
         val db = SoundsDb.getDatabase(applicationContext)
         val repository = SoundsRepository(
             songDao = db.songDao(),
+            playlistDao = db.playlistDao(),
+            db = db,
             soundsDS = SoundsApiDataSource(
                 SoundsApiClient.soundsApi
             ),

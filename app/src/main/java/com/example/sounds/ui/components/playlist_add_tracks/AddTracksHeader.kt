@@ -41,7 +41,9 @@ fun AddTracksHeader(
             iconRes = R.drawable.ic_check,
             color = colorTelli.copy(alpha = opacity),
             isClickable = hasSongs,
-        ) { }
+        ) {
+            onAddFinished()
+        }
         Spacer(modifier = Modifier.width(16.dp))
         Text(
             text = "add tracks",

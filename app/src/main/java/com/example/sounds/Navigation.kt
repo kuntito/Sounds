@@ -37,6 +37,10 @@ fun Navigation(
         composable<Screens.PlaylistAddTracksScreen>{
             PlaylistAddTracksScreenRoot(
                 songViewModel = songViewModel,
+                onFinishCreatePlaylist = {
+                    navController.popBackStack()
+                    songViewModel.onFinishCreatePlaylist()
+                }
             )
         }
     }

@@ -1,11 +1,14 @@
 package com.example.sounds.ui.screens.home_screen
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,6 +25,7 @@ import com.example.sounds.player.PlaybackActions
 import com.example.sounds.player.PlaybackRepeatModes
 import com.example.sounds.player.PlayerState
 import com.example.sounds.player.dummyPlaybackActions
+import com.example.sounds.soundsDebugTag
 import com.example.sounds.ui.HomeScreenTabs
 import com.example.sounds.ui.SongViewModel
 import com.example.sounds.ui.components.song_playing.sp_sheet.SongPlayingSheet
@@ -51,12 +55,14 @@ fun HomeScreenRoot(
     val syncState by songViewModel.syncState.collectAsState()
     val songSync = songViewModel::sync
     val playbackActions = songViewModel.playbackActions
-    val playlists= songViewModel.playlists
+    val playlists by songViewModel.allPlaylists.collectAsState()
     val onPlaylistClick = songViewModel::onPlaylistClick
     val onCreatePlaylistClick = {
         goToPlaylistAddTracks()
         songViewModel.onCreatePlaylistClick()
     }
+    val savedStartHomePage by songViewModel.savedHomePageScreen.collectAsState()
+    val onHomePageTabSwipe = songViewModel::saveHomeScreenCurrentPage
 
     HomeScreen(
         songSync = songSync,
@@ -75,6 +81,8 @@ fun HomeScreenRoot(
         currentTrackNumber = currentTrackNumber,
         syncState = syncState,
         modifier = modifier,
+        savedStartHomePage = savedStartHomePage,
+        onHomePageTabSwipe = onHomePageTabSwipe,
     )
 }
 
@@ -96,7 +104,11 @@ fun HomeScreen(
     playbackRepeatMode: PlaybackRepeatModes,
     currentTrackNumber: Int,
     syncState: SyncState,
+    savedStartHomePage: Int,
+    onHomePageTabSwipe: (Int) -> Unit,
 ) {
+
+    if (savedStartHomePage == -1) return
 
     val topBarMenuOptions = listOf<DropdownMenuOption>(
         DropdownMenuOption(
@@ -106,6 +118,19 @@ fun HomeScreen(
             },
         )
     )
+
+    val homeScreenPagerState = rememberPagerState(
+        initialPage = if (
+            savedStartHomePage in 0 until HomeScreenTabs.allTabs.size
+        ) savedStartHomePage else 0,
+        pageCount = { HomeScreenTabs.allTabs.size }
+    )
+
+    LaunchedEffect(homeScreenPagerState.currentPage) {
+        onHomePageTabSwipe(homeScreenPagerState.currentPage)
+        Log.d(soundsDebugTag, "current page: ${homeScreenPagerState.currentPage}")
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -121,11 +146,11 @@ fun HomeScreen(
                 .fillMaxSize()
             ,
         ) { innerPadding ->
-            // TODO persist pager page..
             RowPagerWithTabs(
                 tabs = HomeScreenTabs
                     .allTabs
                     .map { it.title },
+                pagerState = homeScreenPagerState,
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
@@ -224,6 +249,8 @@ private fun HomeScreenPreview() {
             playbackRepeatMode = playbackRepeatMode,
             currentTrackNumber = currentTrackNumber,
             syncState = syncState,
+            savedStartHomePage = 1,
+            onHomePageTabSwipe = {},
         )
     }
 }

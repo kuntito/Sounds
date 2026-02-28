@@ -6,11 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sounds.data.repository.SoundsRepository
 import com.example.sounds.data.models.Playlist
 import com.example.sounds.data.models.Song
+import com.example.sounds.data.models.toPlaylist
 import com.example.sounds.data.models.toSong
 import com.example.sounds.data.repository.SyncManager
 import com.example.sounds.player.MusicForegroundService
@@ -20,10 +23,10 @@ import com.example.sounds.player.SongPlayer
 import com.example.sounds.playlist.AddTracksManager
 import com.example.sounds.prefDataStore
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
@@ -33,11 +36,29 @@ import kotlinx.coroutines.launch
 
 // TODO clean up view model
 class SongViewModel(
-    application: Application,
+    private val app: Application,
     private val repository: SoundsRepository,
-): AndroidViewModel(application) {
-    private var playSongJob: Job? = null
-    private val songPlayer = SongPlayer(viewModelScope, application)
+): AndroidViewModel(app) {
+
+    private val HOMESCREEN_CUR_PAGE = intPreferencesKey("home_page")
+
+    val savedHomePageScreen: StateFlow<Int> = app.prefDataStore.data
+        .map{ it[HOMESCREEN_CUR_PAGE] ?: 0 }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            -1
+        )
+
+    fun saveHomeScreenCurrentPage(page: Int) {
+        viewModelScope.launch {
+            app.prefDataStore.edit {
+                it[HOMESCREEN_CUR_PAGE] = page
+            }
+        }
+    }
+
+    private val songPlayer = SongPlayer(viewModelScope, app)
     val playerState = songPlayer.playerState
     private val queueManager = QueueManager(
         viewModelScope,
@@ -52,7 +73,14 @@ class SongViewModel(
     val currentTrackNumber = queueManager.currentTrackNumber
     val playbackRepeatMode = queueManager.playbackRepeatMode
 
-    val playlists = listOf<Playlist>()
+    val allPlaylists: StateFlow<List<Playlist>> = repository.getPlaylists()
+        .map { entities -> entities.map { it.toPlaylist() } }
+        .stateIn(
+            scope = viewModelScope,
+            // flow dies after stated duration, to prevent resource wastage
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList(),
+        )
     fun onPlaylistClick(playlistId: Long) {}
 
     // TODO clean up class after saving playlist
@@ -64,6 +92,20 @@ class SongViewModel(
         createPlaylistJob = viewModelScope.launch {
             val initialSongs = allSongs.first()
             _addTracksManager.value = AddTracksManager(initialSongs)
+        }
+    }
+
+    private var finishPlaylistJob: Job? = null
+    fun onFinishCreatePlaylist() {
+        finishPlaylistJob?.cancel()
+        finishPlaylistJob = viewModelScope.launch {
+            _addTracksManager.value?.let { atm ->
+                repository.createPlaylist(
+                    // TODO feature, auto-generate playlist names
+                    name = "mismatch",
+                    songs = atm.addedSongs
+                )
+            }
         }
     }
 
@@ -163,6 +205,7 @@ class SongViewModel(
         playSong(song)
     }
 
+    private var playSongJob: Job? = null
     fun playSong(song: Song) {
         playSongJob?.cancel()
         playSongJob = viewModelScope.launch {
