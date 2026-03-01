@@ -6,6 +6,7 @@ import com.example.sounds.data.local.SoundsDb
 import com.example.sounds.data.local.playlist.PlaylistDao
 import com.example.sounds.data.local.playlist.PlaylistEntity
 import com.example.sounds.data.local.playlist.PlaylistSongEntity
+import com.example.sounds.data.local.playlist.PlaylistWithSongsEntity
 import com.example.sounds.data.local.song.SongDao
 import com.example.sounds.data.local.song.SongEntity
 import com.example.sounds.data.models.Song
@@ -35,9 +36,19 @@ class SoundsRepository(
 
     suspend fun sync(): Boolean = runSync(songDao, soundsDS, context)
 
-    fun getPlaylists(): Flow<List<PlaylistEntity>> = flow {
-        emitAll(playlistDao.getAllPlaylists())
+    fun getPlaylist(playlistId: Long): Flow<PlaylistEntity>
+        = playlistDao.getPlaylist(playlistId)
+
+    fun getAllPlaylists(): Flow<List<PlaylistEntity>>
+        = playlistDao.getAllPlaylists()
+
+    fun getPlaylistWithSongs(playlistId: Long): Flow<PlaylistWithSongsEntity>
+        = playlistDao.getPlaylistWithSongs(playlistId)
+
+    suspend fun removeSongFromPlaylist(songId: String, playlistId: Long): Boolean {
+        return playlistDao.removeSongFromPlaylist(songId, playlistId) > 0
     }
+
     suspend fun createPlaylist(name: String, songs: List<Song>) {
         db.withTransaction {
             val playlistId = playlistDao.createPlaylist(PlaylistEntity(

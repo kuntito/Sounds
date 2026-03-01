@@ -1,14 +1,18 @@
 package com.example.sounds.ui.components.playlist_view
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,10 +28,15 @@ const val iconSize = 24
 fun PlaylistViewHeader(
     modifier: Modifier = Modifier,
     playlistName: String,
+    playlistHasSongs: Boolean,
     playlistDurationMins: Int,
+    onBackNav: () -> Unit,
 ) {
     Column(
+        verticalArrangement = Arrangement.Center,
         modifier = modifier
+            .padding(start = 6.dp)
+            .height(64.dp)
             .fillMaxWidth()
         ,
     ) {
@@ -37,7 +46,7 @@ fun PlaylistViewHeader(
             AppIconButton(
                 iconRes = R.drawable.ic_left_chevron,
                 size = iconSize,
-            ) { }
+            ) { onBackNav() }
             Text(
                 text = playlistName,
                 style = tsOrion,
@@ -46,17 +55,22 @@ fun PlaylistViewHeader(
                 ,
             )
             Row() {
-                AppIconButton(
-                    iconRes = R.drawable.ic_plus,
-                    size = iconSize,
-                ) { }
-                Spacer(modifier = Modifier.width(24.dp))
+                AnimatedVisibility(
+                    visible = playlistHasSongs
+                ) {
+                    AppIconButton(
+                        iconRes = R.drawable.ic_plus,
+                        size = iconSize,
+                        modifier = Modifier.padding(end = 24.dp)
+                    ) { }
+                }
                 AppIconButton(
                     iconRes = R.drawable.ic_more_vert,
                     size = iconSize,
                 ) { }
             }
         }
+        Spacer(modifier = Modifier.height(4.dp))
         SpacedRow(
             isSecondRow = true,
         ) {
@@ -91,6 +105,7 @@ private fun SpacedRow(
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(spacing.dp),
+        verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .fillMaxWidth(),
     ) {
@@ -108,6 +123,8 @@ private fun PlaylistViewHeaderPreview() {
         PlaylistViewHeader(
             playlistName = "Faraway",
             playlistDurationMins = 20,
+            playlistHasSongs = true,
+            onBackNav = {},
         )
     }
 }

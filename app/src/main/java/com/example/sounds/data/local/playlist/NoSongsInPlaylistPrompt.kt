@@ -1,0 +1,54 @@
+package com.example.sounds.data.local.playlist
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.sounds.R
+import com.example.sounds.ui.components.utils.AppIconButton
+import com.example.sounds.ui.components.utils.AppTextButton
+import com.example.sounds.ui.components.utils.PreviewColumn
+import com.example.sounds.ui.theme.colorIsco
+
+@Composable
+fun NoSongsInPlaylistPrompt(
+    modifier: Modifier = Modifier,
+    onAddSongExistingPlaylistClick: () -> Unit,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        AppIconButton(
+            iconRes = R.drawable.ic_plus,
+            size = 48,
+            color = colorIsco,
+        ) {
+            onAddSongExistingPlaylistClick()
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        AppTextButton(
+            text = "add songs",
+        ) {
+            onAddSongExistingPlaylistClick()
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun NoSongsInPlaylistPromptPreview() {
+    PreviewColumn {
+        NoSongsInPlaylistPrompt(
+            onAddSongExistingPlaylistClick = {},
+        )
+    }
+}

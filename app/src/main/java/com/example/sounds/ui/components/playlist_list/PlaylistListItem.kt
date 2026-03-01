@@ -21,6 +21,8 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 import com.example.sounds.ui.theme.colorIsco
 import com.example.sounds.ui.theme.tsOrion
 
+
+// TODO design UI for playlist with no songs.
 @Composable
 fun PlaylistListItem(
     modifier: Modifier = Modifier,
@@ -28,7 +30,7 @@ fun PlaylistListItem(
     onClick: () -> Unit,
 ) {
     ClickableSurface(
-        onClick = {},
+        onClick = onClick,
         isRippleBounded = true,
     ) {
         Row(

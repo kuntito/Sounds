@@ -41,7 +41,8 @@ import com.example.sounds.ui.screens.home_screen.fragments.TrackListFragment
 fun HomeScreenRoot(
     modifier: Modifier = Modifier,
     songViewModel: SongViewModel,
-    goToPlaylistAddTracks: () -> Unit,
+    goToPlaylistAddTracksScreen: () -> Unit,
+    goToPlaylistViewScreen: (Long) -> Unit,
 ) {
     val trackList by songViewModel.allSongs.collectAsState()
     val playerState by songViewModel.playerState.collectAsState()
@@ -56,9 +57,8 @@ fun HomeScreenRoot(
     val songSync = songViewModel::sync
     val playbackActions = songViewModel.playbackActions
     val playlists by songViewModel.allPlaylists.collectAsState()
-    val onPlaylistClick = songViewModel::onPlaylistClick
     val onCreatePlaylistClick = {
-        goToPlaylistAddTracks()
+        goToPlaylistAddTracksScreen()
         songViewModel.onCreatePlaylistClick()
     }
     val savedStartHomePage by songViewModel.savedHomePageScreen.collectAsState()
@@ -73,7 +73,7 @@ fun HomeScreenRoot(
         previousSong = previousSong,
         nextSong = nextSong,
         playlists = playlists,
-        onPlaylistClick = onPlaylistClick,
+        onPlaylistClick = goToPlaylistViewScreen,
         onCreatePlaylistClick = onCreatePlaylistClick,
         songQueue = songQueue,
         isShuffled = isShuffled,

@@ -12,8 +12,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sounds.data.repository.SoundsRepository
 import com.example.sounds.data.models.Playlist
+import com.example.sounds.data.models.PlaylistWithSongs
 import com.example.sounds.data.models.Song
 import com.example.sounds.data.models.toPlaylist
+import com.example.sounds.data.models.toPlaylistWithSongs
 import com.example.sounds.data.models.toSong
 import com.example.sounds.data.repository.SyncManager
 import com.example.sounds.player.MusicForegroundService
@@ -23,10 +25,12 @@ import com.example.sounds.player.SongPlayer
 import com.example.sounds.playlist.AddTracksManager
 import com.example.sounds.prefDataStore
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
@@ -73,7 +77,7 @@ class SongViewModel(
     val currentTrackNumber = queueManager.currentTrackNumber
     val playbackRepeatMode = queueManager.playbackRepeatMode
 
-    val allPlaylists: StateFlow<List<Playlist>> = repository.getPlaylists()
+    val allPlaylists: StateFlow<List<Playlist>> = repository.getAllPlaylists()
         .map { entities -> entities.map { it.toPlaylist() } }
         .stateIn(
             scope = viewModelScope,
@@ -81,7 +85,21 @@ class SongViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList(),
         )
-    fun onPlaylistClick(playlistId: Long) {}
+
+    fun getPlaylistWithSongs(playlistId: Long): Flow<PlaylistWithSongs?> =
+        repository.getPlaylistWithSongs(playlistId)
+            .map { it.toPlaylistWithSongs() }
+
+    private var removeSongFromPlaylistJob: Job? = null
+    private val _removeSongResult = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val removeSongResult = _removeSongResult.asSharedFlow()
+    fun removeSongFromPlaylist(song: Song, playlistId: Long) {
+        removeSongFromPlaylistJob?.cancel()
+        removeSongFromPlaylistJob = viewModelScope.launch {
+            val success = repository.removeSongFromPlaylist(song.id, playlistId)
+            if (success) _removeSongResult.tryEmit(song.title)
+        }
+    }
 
     // TODO clean up class after saving playlist
     private val _addTracksManager = MutableStateFlow<AddTracksManager?>(null)

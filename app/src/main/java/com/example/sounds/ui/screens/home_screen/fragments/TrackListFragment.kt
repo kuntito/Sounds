@@ -22,6 +22,7 @@ fun TrackListFragment(
     miniPlayerHeight: Int,
     modifier: Modifier = Modifier,
 ) {
+    // TODO design and add noTracks component
     Box(
         modifier = modifier
             .fillMaxSize()
