@@ -21,11 +21,11 @@ import com.example.sounds.utils.subsequenceMatch
  * [exposedPool] is what the UI sees. initially it's all available songs,
  * and if the user searches it becomes the search result.
  *
- * [addedTracksIds] notifies the UI each time a song is added.
+ * [addedTracksFlow] notifies the UI each time a song is added.
  */
 class AddTracksManager(allSongs: List<Song>) {
 
-    private val _addedTracksIds = MutableSharedFlow<String>(
+    private val _addedTracksFlow = MutableSharedFlow<Song>(
         // a MutableSharedFlow has a buffer, a queue of emissions waiting
         // by default it's 0, meaning if no collector is ready, the emission is
         // immediately dropped.
@@ -34,7 +34,7 @@ class AddTracksManager(allSongs: List<Song>) {
         // so the emission waits until it's picked up.
         extraBufferCapacity = 1
     )
-    val addedTracksIds: Flow<String> = _addedTracksIds.asSharedFlow()
+    val addedTracksFlow: Flow<Song> = _addedTracksFlow.asSharedFlow()
 
     private val _addedSongs = mutableListOf<Song>()
     val addedSongs: List<Song>
@@ -59,7 +59,7 @@ class AddTracksManager(allSongs: List<Song>) {
         availableSongs.remove(song)
 
         _addedSongs.add(song)
-        _addedTracksIds.tryEmit(song.id)
+        _addedTracksFlow.tryEmit(song)
     }
 
     fun onSearchSong(rawQuery: String){

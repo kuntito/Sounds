@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,8 +30,8 @@ import com.example.sounds.ui.components.utils.AppSnackBar
 import com.example.sounds.ui.components.utils.ClickableSurface
 import com.example.sounds.ui.components.utils.PreviewColumn
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 /**
 * shows a list of songs that can be added to a playlist.
@@ -48,7 +47,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlaylistAddTracksPool(
     modifier: Modifier = Modifier,
-    addedTracksIds: Flow<String>,
+    addedTracksFlow: Flow<Song>,
     pool: List<Song>,
     onAddTrack: (Song) -> Unit,
 ) {
@@ -56,24 +55,22 @@ fun PlaylistAddTracksPool(
         mutableStateOf(pool.map{ it.id }.toSet())
     }
 
-    LaunchedEffect(addedTracksIds) {
-        addedTracksIds.collect { id ->
-            songIdsInPool -= id
-        }
-    }
-
     val snackBarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
 
-    val onItemClick: (Song) -> Unit = { song ->
-        onAddTrack(song)
-        scope.launch {
+    LaunchedEffect(addedTracksFlow) {
+        addedTracksFlow.collect { song ->
+            songIdsInPool -= song.id
+
             snackBarHostState.currentSnackbarData?.dismiss()
             snackBarHostState.showSnackbar(
                 message = "${song.title}, added",
                 duration = SnackbarDuration.Short,
             )
         }
+    }
+
+    val onItemClick: (Song) -> Unit = { song ->
+        onAddTrack(song)
     }
 
     val animationDurationMillis = 500
@@ -136,11 +133,11 @@ fun PlaylistAddTracksPool(
 @Composable
 private fun PlaylistAddTracksPoolPreview() {
     PreviewColumn() {
-        val addedTracksIds = MutableStateFlow("")
+        val addedTracksFlow = MutableSharedFlow<Song>(extraBufferCapacity = 1)
         var pool by remember { mutableStateOf(dummySongList) }
         val onAddTrack: (Song) -> Unit = {
-            addedTracksIds.tryEmit(
-                it.id
+            addedTracksFlow.tryEmit(
+                it
             )
         }
 
@@ -152,7 +149,7 @@ private fun PlaylistAddTracksPoolPreview() {
 
         PlaylistAddTracksPool(
             pool = pool,
-            addedTracksIds = addedTracksIds,
+            addedTracksFlow = addedTracksFlow,
             onAddTrack = onAddTrack,
         )
     }
