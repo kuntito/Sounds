@@ -1,5 +1,6 @@
 package com.example.sounds.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -38,6 +39,10 @@ fun PlaylistAddTracksScreen(
     addTracksManager: AddTracksManager,
     onAddFinished: () -> Unit,
 ) {
+    BackHandler(enabled = addTracksManager.hasSongs) {
+        onAddFinished()
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -51,7 +56,7 @@ fun PlaylistAddTracksScreen(
             onQueryChange = addTracksManager::onSearchSong,
         )
         PlaylistAddTracksPool(
-            addedTracksIds = addTracksManager.addedTracksIds,
+            addedTracksFlow = addTracksManager.addedTracksFlow,
             pool = songPool,
             onAddTrack = addTracksManager::addSong,
             modifier = modifier
