@@ -15,6 +15,9 @@ interface SongDao {
     @Query("SELECT * FROM songs WHERE id = :songId")
     suspend fun getSongById(songId: String): SongEntity?
 
+    @Query("SELECT * FROM songs WHERE id NOT IN (SELECT songId FROM playlist_songs WHERE playlistId = :playlistId)")
+    suspend fun getSongsNotInPlaylist(playlistId: Long): List<SongEntity>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(song: SongEntity)
 

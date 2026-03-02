@@ -44,10 +44,9 @@ fun Navigation(
         composable<Screens.PlaylistAddTracksScreen>{
             PlaylistAddTracksScreenRoot(
                 songViewModel = songViewModel,
-                onFinishCreatePlaylist = {
+                goToPreviousScreen = {
                     navController.popBackStack()
-                    songViewModel.onFinishCreatePlaylist()
-                }
+                },
             )
         }
         composable<Screens.PlaylistViewScreen>{ entry ->
@@ -57,6 +56,11 @@ fun Navigation(
                 songViewModel = songViewModel,
                 onBackNav = {
                     navController.popBackStack()
+                },
+                goToPlaylistAddTracksScreen = {
+                    navController.navigate(
+                        Screens.PlaylistAddTracksScreen
+                    )
                 }
             )
         }

@@ -2,6 +2,7 @@ package com.example.sounds.data.local.playlist
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
@@ -18,7 +19,7 @@ interface PlaylistDao {
     @Insert
     suspend fun addSongToPlaylist(song: PlaylistSongEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun addManySongsToPlaylist(songs: List<PlaylistSongEntity>)
 
     @Query("SELECT * FROM playlists WHERE id = :playlistId")

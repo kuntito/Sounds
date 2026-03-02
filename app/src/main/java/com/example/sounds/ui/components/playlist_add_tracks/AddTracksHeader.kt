@@ -22,6 +22,7 @@ import com.example.sounds.ui.theme.tsOrion
 @Composable
 fun AddTracksHeader(
     modifier: Modifier = Modifier,
+    playlistName: String?,
     hasSongs: Boolean,
     onAddFinished: () -> Unit,
 ) {
@@ -36,6 +37,9 @@ fun AddTracksHeader(
             targetValue = if (hasSongs) 1f else 0.15f,
             label = "checkmark opacity"
         )
+        val headerText = playlistName?.let {
+            "add tracks to $it"
+        } ?: "add tracks"
         Spacer(modifier = Modifier.width(16.dp))
         AppIconButton(
             iconRes = R.drawable.ic_check,
@@ -46,7 +50,7 @@ fun AddTracksHeader(
         }
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = "add tracks",
+            text = headerText,
             style = tsOrion,
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -60,6 +64,7 @@ private fun AddTracksHeaderPreview() {
         AddTracksHeader(
             onAddFinished = {},
             hasSongs = false,
+            playlistName = null,
         )
     }
 }

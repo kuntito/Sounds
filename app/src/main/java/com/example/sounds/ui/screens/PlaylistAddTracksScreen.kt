@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.sounds.data.models.dummyPlaylist
 import com.example.sounds.data.models.dummySongList
 import com.example.sounds.playlist.AddTracksManager
 import com.example.sounds.ui.SongViewModel
@@ -20,14 +21,21 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 fun PlaylistAddTracksScreenRoot(
     modifier: Modifier = Modifier,
     songViewModel: SongViewModel,
-    onFinishCreatePlaylist: () -> Unit,
+    goToPreviousScreen: () -> Unit,
 ) {
     val addTracksManager by songViewModel.addTracksManager.collectAsState()
 
-    addTracksManager?.let {
+    addTracksManager?.let { atm ->
         PlaylistAddTracksScreen(
-            addTracksManager = it,
-            onAddFinished = onFinishCreatePlaylist,
+            addTracksManager = atm,
+            onAddFinished = {
+                goToPreviousScreen()
+                if (atm.playlist == null) {
+                    songViewModel.onFinishCreatePlaylist()
+                } else {
+                    songViewModel.onFinishAddTracksExistingPlaylist()
+                }
+            },
             modifier = modifier,
         )
     }
@@ -51,6 +59,7 @@ fun PlaylistAddTracksScreen(
         AddTracksHeader(
             onAddFinished = onAddFinished,
             hasSongs = addTracksManager.hasSongs,
+            playlistName = addTracksManager.playlist?.playlistName
         )
         AddTrackSearchBar(
             onQueryChange = addTracksManager::onSearchSong,
@@ -70,7 +79,8 @@ private fun PlaylistAddTracksScreenPreview() {
     PreviewColumn {
         PlaylistAddTracksScreen(
             addTracksManager = AddTracksManager(
-                dummySongList
+                dummySongList,
+                playlist = dummyPlaylist,
             ),
             onAddFinished = {},
         )

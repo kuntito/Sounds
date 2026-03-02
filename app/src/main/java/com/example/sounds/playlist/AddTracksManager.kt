@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.sounds.data.models.Playlist
 import com.example.sounds.utils.subsequenceMatch
 
 /**
@@ -22,8 +23,13 @@ import com.example.sounds.utils.subsequenceMatch
  * and if the user searches it becomes the search result.
  *
  * [addedTracksFlow] notifies the UI each time a song is added.
+ *
+ * [playlist] is null, if it's a new playlist.
  */
-class AddTracksManager(allSongs: List<Song>) {
+class AddTracksManager(
+    initialSongs: List<Song>,
+    val playlist: Playlist?,
+) {
 
     private val _addedTracksFlow = MutableSharedFlow<Song>(
         // a MutableSharedFlow has a buffer, a queue of emissions waiting
@@ -43,7 +49,7 @@ class AddTracksManager(allSongs: List<Song>) {
     var hasSongs by mutableStateOf(false)
         private set
 
-    private var availableSongs = allSongs.toMutableList()
+    private var availableSongs = initialSongs.toMutableList()
 
     // i want a copy of availableSongs, toList() works but doesn't say that.
     private fun availableSongsSnapshot() = availableSongs.toList()

@@ -31,6 +31,7 @@ fun PlaylistViewScreenRoot(
     playlistId: Long,
     songViewModel: SongViewModel,
     onBackNav: () -> Unit,
+    goToPlaylistAddTracksScreen: () -> Unit,
 ) {
     val playlistWithSongs by remember(playlistId) {
         songViewModel.getPlaylistWithSongs(playlistId)
@@ -46,6 +47,10 @@ fun PlaylistViewScreenRoot(
             onSongItemClick = onSongItemClick,
             onRemoveSongSuccess = onRemoveSongSuccess,
             onBackNav = onBackNav,
+            onAddTracksExistingPlaylistClick = {
+                goToPlaylistAddTracksScreen()
+                songViewModel.onAddTracksExistingPlaylistClick(it.playlist)
+            },
         )
     }
 }
@@ -58,6 +63,7 @@ fun PlaylistViewScreen(
     removeSongFromPlaylist: (Song, Long) -> Unit,
     onRemoveSongSuccess: Flow<String>,
     onBackNav: () -> Unit,
+    onAddTracksExistingPlaylistClick: () -> Unit,
 ) {
     val playlistDurationMins = millisToMinutes(
         playlistWithSongs.playlistSongs.sumOf { it.durationMillis }
@@ -84,12 +90,13 @@ fun PlaylistViewScreen(
             playlistDurationMins = playlistDurationMins,
             playlistHasSongs = playlistWithSongs.playlistSongs.isNotEmpty(),
             onBackNav = onBackNav,
+            onAddTracksExistingPlaylist = onAddTracksExistingPlaylistClick,
         )
         Spacer(modifier = Modifier.height(16.dp))
         if (playlistWithSongs.playlistSongs.isEmpty()) {
-            NoSongsInPlaylistPrompt() {
-                // TODO
-            }
+            NoSongsInPlaylistPrompt(
+                onAddSongExistingPlaylistClick = onAddTracksExistingPlaylistClick
+            )
         } else {
             PlaylistSongList(
                 playlistSongs = playlistWithSongs.playlistSongs,
@@ -118,6 +125,7 @@ private fun PlaylistViewScreenPreview() {
             onSongItemClick = { _, _ -> },
             onRemoveSongSuccess = MutableSharedFlow(),
             onBackNav = { },
+            onAddTracksExistingPlaylistClick = { },
         )
     }
 }

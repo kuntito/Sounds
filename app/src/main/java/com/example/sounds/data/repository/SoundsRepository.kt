@@ -10,6 +10,7 @@ import com.example.sounds.data.local.playlist.PlaylistWithSongsEntity
 import com.example.sounds.data.local.song.SongDao
 import com.example.sounds.data.local.song.SongEntity
 import com.example.sounds.data.models.Song
+import com.example.sounds.data.models.toSong
 import com.example.sounds.data.remote.SoundsApiDataSource
 import com.example.sounds.data.repository.sync.runSync
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,7 @@ class SoundsRepository(
     private val soundsDS: SoundsApiDataSource,
     private val context: Context,
 ) {
+    // TODO i should be returning domain models not entities, do the mapping in here.
     fun getSongs(): Flow<List<SongEntity>> = flow {
         val dbSongs = songDao.getAllSongs().first()
 
@@ -33,6 +35,9 @@ class SoundsRepository(
 
         emitAll(songDao.getAllSongs())
     }
+
+    suspend fun getSongsNotInPlaylist(playlistId: Long): List<Song>
+        = songDao.getSongsNotInPlaylist(playlistId).map { it.toSong() }
 
     suspend fun sync(): Boolean = runSync(songDao, soundsDS, context)
 
@@ -44,6 +49,19 @@ class SoundsRepository(
 
     fun getPlaylistWithSongs(playlistId: Long): Flow<PlaylistWithSongsEntity>
         = playlistDao.getPlaylistWithSongs(playlistId)
+
+    suspend fun updatePlaylist(
+        playlistId: Long,
+        addedSongs: List<Song>,
+    ) {
+        val playlistSongEntities = addedSongs.map { song ->
+            PlaylistSongEntity(
+                playlistId = playlistId,
+                songId = song.id
+            )
+        }
+        playlistDao.addManySongsToPlaylist(playlistSongEntities)
+    }
 
     suspend fun removeSongFromPlaylist(songId: String, playlistId: Long): Boolean {
         return playlistDao.removeSongFromPlaylist(songId, playlistId) > 0

@@ -109,7 +109,10 @@ class SongViewModel(
         createPlaylistJob?.cancel()
         createPlaylistJob = viewModelScope.launch {
             val initialSongs = allSongs.first()
-            _addTracksManager.value = AddTracksManager(initialSongs)
+            _addTracksManager.value = AddTracksManager(
+                initialSongs = initialSongs,
+                playlist = null,
+            )
         }
     }
 
@@ -124,6 +127,38 @@ class SongViewModel(
                     songs = atm.addedSongs
                 )
             }
+            _addTracksManager.value = null
+        }
+    }
+
+    private var onUpdatePlaylistJob: Job? = null
+    fun onAddTracksExistingPlaylistClick(playlist: Playlist) {
+        onUpdatePlaylistJob?.cancel()
+        onUpdatePlaylistJob = viewModelScope.launch {
+            val initialSongs = repository
+                .getSongsNotInPlaylist(playlist.id)
+
+            _addTracksManager.value = AddTracksManager(
+                initialSongs = initialSongs,
+                playlist = playlist,
+            )
+        }
+    }
+
+    private var onFinishAddTracksExistingPlaylistJob: Job? = null
+    fun onFinishAddTracksExistingPlaylist() {
+        onFinishAddTracksExistingPlaylistJob?.cancel()
+        onFinishAddTracksExistingPlaylistJob = viewModelScope.launch {
+            _addTracksManager.value?.let { atm ->
+                val playlist = atm.playlist ?: return@launch
+                repository
+                    .updatePlaylist(
+                        playlistId = playlist.id,
+                        addedSongs = atm.addedSongs,
+                    )
+            }
+
+            _addTracksManager.value = null
         }
     }
 

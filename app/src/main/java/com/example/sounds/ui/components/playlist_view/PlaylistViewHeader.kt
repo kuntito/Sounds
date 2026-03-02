@@ -31,6 +31,7 @@ fun PlaylistViewHeader(
     playlistHasSongs: Boolean,
     playlistDurationMins: Int,
     onBackNav: () -> Unit,
+    onAddTracksExistingPlaylist: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -62,7 +63,9 @@ fun PlaylistViewHeader(
                         iconRes = R.drawable.ic_plus,
                         size = iconSize,
                         modifier = Modifier.padding(end = 24.dp)
-                    ) { }
+                    ) {
+                        onAddTracksExistingPlaylist()
+                    }
                 }
                 AppIconButton(
                     iconRes = R.drawable.ic_more_vert,
@@ -125,6 +128,7 @@ private fun PlaylistViewHeaderPreview() {
             playlistDurationMins = 20,
             playlistHasSongs = true,
             onBackNav = {},
+            onAddTracksExistingPlaylist = {},
         )
     }
 }
