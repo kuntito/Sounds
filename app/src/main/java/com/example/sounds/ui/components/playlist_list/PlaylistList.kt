@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.sounds.data.models.DropdownMenuOption
 import com.example.sounds.data.models.Playlist
 import com.example.sounds.data.models.dummyPlaylistList
 import com.example.sounds.ui.components.utils.PreviewColumn
@@ -18,6 +19,7 @@ fun PlaylistList(
     playlists: List<Playlist>,
     topEdgePadding: Float,
     bottomEdgePadding: Float,
+    getPlaylistMenuOptions: (Playlist) -> List<DropdownMenuOption>,
     onPlaylistClick: (Long) -> Unit,
 ) {
     LazyColumn(
@@ -32,6 +34,7 @@ fun PlaylistList(
         itemsIndexed(playlists) { index, pl ->
             PlaylistListItem(
                 playlistName = pl.playlistName,
+                playlistMenuOptions = getPlaylistMenuOptions(pl),
                 onClick = {
                     onPlaylistClick(pl.id)
                 }
@@ -49,6 +52,7 @@ private fun PlaylistListPreview() {
             topEdgePadding = 16f,
             bottomEdgePadding = 16f,
             onPlaylistClick = {},
+            getPlaylistMenuOptions = { emptyList() }
         )
     }
 }

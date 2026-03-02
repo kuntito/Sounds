@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 fun PlaylistViewScreenRoot(
     playlistId: Long,
     songViewModel: SongViewModel,
-    onBackNav: () -> Unit,
+    goToPreviousScreen: () -> Unit,
     goToPlaylistAddTracksScreen: () -> Unit,
 ) {
     val playlistWithSongs by remember(playlistId) {
@@ -40,17 +40,21 @@ fun PlaylistViewScreenRoot(
     val removeSongFromPlaylist = songViewModel::removeSongFromPlaylist
     val onRemoveSongSuccess = songViewModel.removeSongResult
 
-    playlistWithSongs?.let {
+    playlistWithSongs?.let { pwsongs ->
         PlaylistViewScreen(
-            playlistWithSongs = it,
+            playlistWithSongs = pwsongs,
             removeSongFromPlaylist = removeSongFromPlaylist,
             onSongItemClick = onSongItemClick,
             onRemoveSongSuccess = onRemoveSongSuccess,
-            onBackNav = onBackNav,
             onAddTracksExistingPlaylistClick = {
                 goToPlaylistAddTracksScreen()
-                songViewModel.onAddTracksExistingPlaylistClick(it.playlist)
+                songViewModel.onAddTracksExistingPlaylistClick(pwsongs.playlist)
             },
+            deletePlaylistAndNavBack = {
+                goToPreviousScreen()
+                songViewModel.deletePlaylist(pwsongs.playlist.id)
+            },
+            onNavBackClick = goToPreviousScreen,
         )
     }
 }
@@ -62,8 +66,9 @@ fun PlaylistViewScreen(
     onSongItemClick: (Int, List<Song>) -> Unit,
     removeSongFromPlaylist: (Song, Long) -> Unit,
     onRemoveSongSuccess: Flow<String>,
-    onBackNav: () -> Unit,
     onAddTracksExistingPlaylistClick: () -> Unit,
+    deletePlaylistAndNavBack: () -> Unit,
+    onNavBackClick: () -> Unit,
 ) {
     val playlistDurationMins = millisToMinutes(
         playlistWithSongs.playlistSongs.sumOf { it.durationMillis }
@@ -80,6 +85,13 @@ fun PlaylistViewScreen(
         )
     }
 
+    val playlistViewMenuOptions = listOf<DropdownMenuOption>(
+        DropdownMenuOption(
+            label = "delete playlist",
+            onClick = deletePlaylistAndNavBack,
+        )
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -89,8 +101,9 @@ fun PlaylistViewScreen(
             playlistName = playlistWithSongs.playlist.playlistName,
             playlistDurationMins = playlistDurationMins,
             playlistHasSongs = playlistWithSongs.playlistSongs.isNotEmpty(),
-            onBackNav = onBackNav,
+            onNavBackClick = onNavBackClick,
             onAddTracksExistingPlaylist = onAddTracksExistingPlaylistClick,
+            playlistViewMenuOptions = playlistViewMenuOptions,
         )
         Spacer(modifier = Modifier.height(16.dp))
         if (playlistWithSongs.playlistSongs.isEmpty()) {
@@ -124,8 +137,9 @@ private fun PlaylistViewScreenPreview() {
             removeSongFromPlaylist = { _, _ -> },
             onSongItemClick = { _, _ -> },
             onRemoveSongSuccess = MutableSharedFlow(),
-            onBackNav = { },
             onAddTracksExistingPlaylistClick = { },
+            deletePlaylistAndNavBack = {},
+            onNavBackClick = {},
         )
     }
 }

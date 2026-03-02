@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.sounds.data.models.DropdownMenuOption
 import com.example.sounds.data.models.Playlist
 import com.example.sounds.data.models.dummyPlaylistList
 import com.example.sounds.ui.components.playlist_list.CreatePlaylistButton
@@ -22,8 +23,20 @@ fun PlaylistListFragment(
     playlists: List<Playlist>,
     onPlaylistClick: (Long) -> Unit,
     onCreatePlaylistClick: () -> Unit,
+    deletePlaylist: (Long) -> Unit,
     miniPlayerHeight: Int,
 ) {
+    val getPlaylistMenuOptions: (Playlist) -> List<DropdownMenuOption> = { pl ->
+        listOf<DropdownMenuOption>(
+            DropdownMenuOption(
+                label = "delete playlist",
+                onClick = {
+                    deletePlaylist(pl.id)
+                }
+            )
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -49,6 +62,7 @@ fun PlaylistListFragment(
                 topEdgePadding = 16f,
                 // TODO unify bottomEdgePadding, it also occurs in `TrackListScreen`
                 bottomEdgePadding = miniPlayerHeight * 1.2f,
+                getPlaylistMenuOptions = getPlaylistMenuOptions,
                 onPlaylistClick = onPlaylistClick,
             )
         }
@@ -65,6 +79,7 @@ private fun PlaylistListFragmentPreview() {
             playlists = dummyPlaylistList,
             onPlaylistClick = {},
             onCreatePlaylistClick = {},
+            deletePlaylist = {},
             miniPlayerHeight = 48,
         )
     }

@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sounds.R
+import com.example.sounds.data.models.DropdownMenuOption
+import com.example.sounds.ui.components.utils.AppDropdownMenu
 import com.example.sounds.ui.components.utils.AppIconButton
 import com.example.sounds.ui.components.utils.PreviewColumn
 import com.example.sounds.ui.theme.colorIsco
@@ -30,8 +32,9 @@ fun PlaylistViewHeader(
     playlistName: String,
     playlistHasSongs: Boolean,
     playlistDurationMins: Int,
-    onBackNav: () -> Unit,
+    onNavBackClick: () -> Unit,
     onAddTracksExistingPlaylist: () -> Unit,
+    playlistViewMenuOptions: List<DropdownMenuOption>,
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -47,7 +50,7 @@ fun PlaylistViewHeader(
             AppIconButton(
                 iconRes = R.drawable.ic_left_chevron,
                 size = iconSize,
-            ) { onBackNav() }
+            ) { onNavBackClick() }
             Text(
                 text = playlistName,
                 style = tsOrion,
@@ -67,10 +70,7 @@ fun PlaylistViewHeader(
                         onAddTracksExistingPlaylist()
                     }
                 }
-                AppIconButton(
-                    iconRes = R.drawable.ic_more_vert,
-                    size = iconSize,
-                ) { }
+                AppDropdownMenu(dropdownOptions = playlistViewMenuOptions)
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -127,8 +127,9 @@ private fun PlaylistViewHeaderPreview() {
             playlistName = "Faraway",
             playlistDurationMins = 20,
             playlistHasSongs = true,
-            onBackNav = {},
+            onNavBackClick = {},
             onAddTracksExistingPlaylist = {},
+            playlistViewMenuOptions = emptyList(),
         )
     }
 }

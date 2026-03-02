@@ -88,7 +88,7 @@ class SongViewModel(
 
     fun getPlaylistWithSongs(playlistId: Long): Flow<PlaylistWithSongs?> =
         repository.getPlaylistWithSongs(playlistId)
-            .map { it.toPlaylistWithSongs() }
+            .map { it?.toPlaylistWithSongs() }
 
     private var removeSongFromPlaylistJob: Job? = null
     private val _removeSongResult = MutableSharedFlow<String>(extraBufferCapacity = 1)
@@ -159,6 +159,14 @@ class SongViewModel(
             }
 
             _addTracksManager.value = null
+        }
+    }
+
+    private var deletePlaylistJob: Job? = null
+    fun deletePlaylist(playlistId: Long) {
+        deletePlaylistJob?.cancel()
+        deletePlaylistJob = viewModelScope.launch {
+            repository.deletePlaylist(playlistId)
         }
     }
 

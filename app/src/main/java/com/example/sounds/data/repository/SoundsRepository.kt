@@ -47,7 +47,7 @@ class SoundsRepository(
     fun getAllPlaylists(): Flow<List<PlaylistEntity>>
         = playlistDao.getAllPlaylists()
 
-    fun getPlaylistWithSongs(playlistId: Long): Flow<PlaylistWithSongsEntity>
+    fun getPlaylistWithSongs(playlistId: Long): Flow<PlaylistWithSongsEntity?>
         = playlistDao.getPlaylistWithSongs(playlistId)
 
     suspend fun updatePlaylist(
@@ -82,5 +82,9 @@ class SoundsRepository(
 
             playlistDao.addManySongsToPlaylist(playlistSongs)
         }
+    }
+
+    suspend fun deletePlaylist(playlistId: Long) {
+        playlistDao.deletePlaylist(playlistId)
     }
 }

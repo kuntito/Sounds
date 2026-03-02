@@ -61,6 +61,7 @@ fun HomeScreenRoot(
         goToPlaylistAddTracksScreen()
         songViewModel.onCreatePlaylistClick()
     }
+    val deletePlaylist = songViewModel::deletePlaylist
     val savedStartHomePage by songViewModel.savedHomePageScreen.collectAsState()
     val onHomePageTabSwipe = songViewModel::saveHomeScreenCurrentPage
 
@@ -75,6 +76,7 @@ fun HomeScreenRoot(
         playlists = playlists,
         onPlaylistClick = goToPlaylistViewScreen,
         onCreatePlaylistClick = onCreatePlaylistClick,
+        deletePlaylist = deletePlaylist,
         songQueue = songQueue,
         isShuffled = isShuffled,
         playbackRepeatMode = playbackRepeatMode,
@@ -99,6 +101,7 @@ fun HomeScreen(
     playlists: List<Playlist>,
     onPlaylistClick: (Long) -> Unit,
     onCreatePlaylistClick: () -> Unit,
+    deletePlaylist: (Long) -> Unit,
     songQueue: List<Song>,
     isShuffled: Boolean,
     playbackRepeatMode: PlaybackRepeatModes,
@@ -169,6 +172,7 @@ fun HomeScreen(
                         miniPlayerHeight = miniPlayerHeight,
                         onPlaylistClick = onPlaylistClick,
                         onCreatePlaylistClick = onCreatePlaylistClick,
+                        deletePlaylist = deletePlaylist,
                     )
                 }
             }
@@ -244,6 +248,7 @@ private fun HomeScreenPreview() {
             playlists = playlists,
             onPlaylistClick = onPlaylistClick,
             onCreatePlaylistClick = onCreatePlaylistClick,
+            deletePlaylist = {},
             songQueue = songQueue,
             isShuffled = isShuffled,
             playbackRepeatMode = playbackRepeatMode,

@@ -54,7 +54,7 @@ fun Navigation(
             PlaylistViewScreenRoot(
                 playlistId = screen.playlistId,
                 songViewModel = songViewModel,
-                onBackNav = {
+                goToPreviousScreen = {
                     navController.popBackStack()
                 },
                 goToPlaylistAddTracksScreen = {

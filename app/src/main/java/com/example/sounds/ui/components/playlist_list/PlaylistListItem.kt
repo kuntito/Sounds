@@ -15,7 +15,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.sounds.R
-import com.example.sounds.ui.components.utils.AppIconButton
+import com.example.sounds.data.models.DropdownMenuOption
+import com.example.sounds.data.models.dummyDropdownOptions
+import com.example.sounds.ui.components.utils.AppDropdownMenu
 import com.example.sounds.ui.components.utils.ClickableSurface
 import com.example.sounds.ui.components.utils.PreviewColumn
 import com.example.sounds.ui.theme.colorIsco
@@ -27,6 +29,7 @@ import com.example.sounds.ui.theme.tsOrion
 fun PlaylistListItem(
     modifier: Modifier = Modifier,
     playlistName: String,
+    playlistMenuOptions: List<DropdownMenuOption>,
     onClick: () -> Unit,
 ) {
     ClickableSurface(
@@ -58,9 +61,7 @@ fun PlaylistListItem(
                 ,
             )
             Spacer(modifier = Modifier.width(16.dp))
-            AppIconButton(
-                iconRes = R.drawable.ic_more_vert
-            ) { }
+            AppDropdownMenu(dropdownOptions = playlistMenuOptions)
             Spacer(modifier = Modifier.width(4.dp))
         }
     }
@@ -72,6 +73,7 @@ private fun PlaylistListItemPreview() {
     PreviewColumn() {
         PlaylistListItem(
             playlistName = "flames",
+            playlistMenuOptions = dummyDropdownOptions,
             onClick = {},
         )
     }
