@@ -32,6 +32,7 @@ import com.example.sounds.ui.components.utils.PreviewColumn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 /**
 * shows a list of songs that can be added to a playlist.
@@ -61,11 +62,13 @@ fun PlaylistAddTracksPool(
         addedTracksFlow.collect { song ->
             songIdsInPool -= song.id
 
-            snackBarHostState.currentSnackbarData?.dismiss()
-            snackBarHostState.showSnackbar(
-                message = "${song.title}, added",
-                duration = SnackbarDuration.Short,
-            )
+            launch {
+                snackBarHostState.currentSnackbarData?.dismiss()
+                snackBarHostState.showSnackbar(
+                    message = "${song.title}, added",
+                    duration = SnackbarDuration.Short,
+                )
+            }
         }
     }
 
